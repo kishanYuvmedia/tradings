@@ -159,18 +159,18 @@
                                 $totalCallsTotalQtyTraded += $value['TOTALQTYTRADED'];
                             ?>
 
-                            <tr>
+                            {{-- <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>{{ $value['OPENINTEREST'] }}</td>
                                 <td>{{ $value['OPENINTERESTCHANGE'] }}</td>
                                 <td>{{ $value['TOTALQTYTRADED'] }}</td>
                                 <td>{{ $value['PRICECHANGEPERCENTAGE'] }}</td>
                                 <td>{{ $value['LASTTRADEPRICE'] }}</td>
-                            </tr>
+                            </tr> --}}
 
 
 
-                            {{-- 
+
                             <tr>
                                 <td>{{ $key + 1 }}</td>
                                 <td>
@@ -188,7 +188,7 @@
                                 <td>{{ $value['LASTTRADEPRICE'] == 0 ? '-' : $value['LASTTRADEPRICE'] }}
                                 </td>
 
-                            </tr> --}}
+                            </tr>
                             <?php } ?>
                             <!-- Add a new row to display the total counts for calls -->
 
@@ -239,7 +239,7 @@
                                     $totalPutsOpenInterestChange += $value['OPENINTERESTCHANGE'];
                                     $totalPutsTotalQtyTraded += $value['TOTALQTYTRADED'];
                             ?>
-                            <tr style="color: white">
+                            {{-- <tr style="color: white">
 
                                 <td style="background-color: #22272f;border-bottom:hidden">{{ $value['value'] }}</td>
                                 <td>{{ $value['LASTTRADEPRICE'] }}</td>
@@ -247,9 +247,9 @@
                                 <td>{{ $value['TOTALQTYTRADED'] }}</td>
                                 <td>{{ $value['OPENINTERESTCHANGE'] }}</td>
                                 <td>{{ $value['OPENINTEREST'] }}</td>
-                            </tr>
+                            </tr> --}}
 
-                            {{-- <tr style="color: white">
+                            <tr style="color: white">
 
                                 <td style="background-color: #22272f;border-bottom:hidden">{{ $value['value'] }}</td>
                                 <td>
@@ -267,7 +267,7 @@
                                 <td>
                                     {{ $value['OPENINTEREST'] == 0 ? '-' : $value['OPENINTEREST'] }}
                                 </td>
-                            </tr> --}}
+                            </tr>
                             <?php } ?>
                             <!-- Add a new row to display the total counts for puts -->
                             <tr>
@@ -347,15 +347,11 @@
                         updatedHtml += '<tr>';
 
                         updatedHtml += '<td style="color:white">' + (key + 1) + '</td>';
-                        updatedHtml += '<td style="color:white">' + item.OPENINTEREST + '</td>';
-                        updatedHtml += '<td style="color:white">' + item.OPENINTERESTCHANGE +
-                            '</td>';
-                        updatedHtml += '<td style="color:white">' + item.TOTALQTYTRADED +
-                            '</td>';
-                        updatedHtml += '<td style="color:white">' + item.PRICECHANGEPERCENTAGE +
-                            '</td>';
-                        updatedHtml += '<td style="color:white">' + item.LASTTRADEPRICE +
-                            '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.OPENINTEREST == 0 ? '-' : item.OPENINTEREST) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.OPENINTERESTCHANGE == 0 ? '-' : item.OPENINTERESTCHANGE) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ? '-' :item.TOTALQTYTRADED) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.PRICECHANGEPERCENTAGE ==  0 ? '-' : item.PRICECHANGEPERCENTAGE) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ? '-' : item.LASTTRADEPRICE) + '</td>';
                         updatedHtml += '</tr>';
                     });
                     updatedHtml += '</table></div>';
@@ -368,16 +364,11 @@
                         updatedHtml1 +=
                             '<td style="color:white; background-color: #22272f; border-bottom: hidden;">' +
                             item.value + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + item.LASTTRADEPRICE +
-                            '</td>';
-                        updatedHtml1 += '<td style="color:white">' + item
-                            .PRICECHANGEPERCENTAGE + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + item.TOTALQTYTRADED +
-                            '</td>';
-                        updatedHtml1 += '<td style="color:white">' + item.OPENINTERESTCHANGE +
-                            '</td>';
-                        updatedHtml1 += '<td style="color:white">' + item.OPENINTEREST +
-                            '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ? '-' : item.LASTTRADEPRICE) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.PRICECHANGEPERCENTAGE ==  0 ? '-' : item.PRICECHANGEPERCENTAGE) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ? '-' :item.TOTALQTYTRADED) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.OPENINTERESTCHANGE == 0 ? '-' : item.OPENINTERESTCHANGE) +'</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.OPENINTEREST == 0 ? '-' : item.OPENINTEREST) +'</td>';
                         updatedHtml1 += '</tr>';
                     });
                     updatedHtml1 += '</table></div>';
@@ -459,15 +450,13 @@
                         console.log(item)
                         updatedHtml += '<tr>';
                         updatedHtml += '<td style="color:white">' + parseInt(key + 1) + '</td>';
-                        updatedHtml += '<td style="color:white">' + item.OPENINTEREST + '</td>';
-                        updatedHtml += '<td style="color:white">' + item.OPENINTERESTCHANGE +
-                            '</td>';
-                        updatedHtml += '<td style="color:white">' + item.TOTALQTYTRADED +
-                            '</td>';
-                        updatedHtml += '<td style="color:white">' + item.PRICECHANGEPERCENTAGE +
-                            '</td>';
-                        updatedHtml += '<td style="color:white">' + item.LASTTRADEPRICE +
-                            '</td>';
+
+                        updatedHtml += '<td style="color:white">' + (item.OPENINTEREST == 0 ? '-' : item.OPENINTEREST) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.OPENINTERESTCHANGE == 0 ? '-' : item.OPENINTERESTCHANGE) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ? '-' :item.TOTALQTYTRADED) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.PRICECHANGEPERCENTAGE ==  0 ? '-' : item.PRICECHANGEPERCENTAGE) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ? '-' : item.LASTTRADEPRICE) + '</td>';
+
                         updatedHtml += '</tr>';
                     });
                     updatedHtml += '</table></div>';
@@ -480,17 +469,13 @@
                         updatedHtml1 +=
                             '<td  style="color:white; background-color: #22272f; border-bottom: hidden;" >' +
                             item.value + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + item.LASTTRADEPRICE +
-                            '</td>';
-                        updatedHtml1 += '<td style="color:white">' + item
-                            .PRICECHANGEPERCENTAGE + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + item.TOTALQTYTRADED +
-                            '</td>';
-                        updatedHtml1 += '<td style="color:white">' + item.OPENINTERESTCHANGE +
-                            '</td>';
-                        updatedHtml1 += '<td style="color:white">' + item.OPENINTEREST +
-                            '</td>';
+                            updatedHtml1 += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ? '-' : item.LASTTRADEPRICE) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.PRICECHANGEPERCENTAGE ==  0 ? '-' : item.PRICECHANGEPERCENTAGE) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ? '-' :item.TOTALQTYTRADED) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.OPENINTERESTCHANGE == 0 ? '-' : item.OPENINTERESTCHANGE) +'</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.OPENINTEREST == 0 ? '-' : item.OPENINTEREST) +'</td>';
                         updatedHtml1 += '</tr>';
+
                     });
                     updatedHtml1 += '</table></div>';
 
