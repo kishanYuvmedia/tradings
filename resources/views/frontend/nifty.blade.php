@@ -334,14 +334,14 @@
                     response.callArr.forEach(function(item, key) {
                         updatedHtml += '<tr>';
                         updatedHtml += '<td style="color:white">' + (key + 1) + '</td>';
-                        updatedHtml += '<td style="color:white">' + item.OPENINTEREST + '</td>';
-                        updatedHtml += '<td style="color:white">' + item.OPENINTERESTCHANGE +
+                        updatedHtml += '<td style="color:white">' + (item.OPENINTEREST == 0 ? '-' : item.OPENINTEREST) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.OPENINTERESTCHANGE == 0 ? '-' : item.OPENINTERESTCHANGE) +
                             '</td>';
-                        updatedHtml += '<td style="color:white">' + item.TOTALQTYTRADED +
+                        updatedHtml += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ? '-' : item.TOTALQTYTRADED) +
                             '</td>';
-                        updatedHtml += '<td style="color:white">' + item.PRICECHANGEPERCENTAGE +
+                        updatedHtml += '<td style="color:white">' + (item.PRICECHANGEPERCENTAGE == 0 ? '-' : item.PRICECHANGEPERCENTAGE) +
                             '</td>';
-                        updatedHtml += '<td style="color:white">' + item.LASTTRADEPRICE +
+                        updatedHtml += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ? '-' : item.LASTTRADEPRICE) +
                             '</td>';
                         updatedHtml += '</tr>';
                     });
@@ -355,16 +355,18 @@
                         updatedHtml1 +=
                             '<td style="color:white; background-color: #22272f; border-bottom: hidden;">' +
                             item.value + '</td>';
-                        updatedHtml1 += '<td  style="color:white">' + item.LASTTRADEPRICE +
-                            '</td>';
-                        updatedHtml1 += '<td  style="color:white">' + item
-                            .PRICECHANGEPERCENTAGE + '</td>';
-                        updatedHtml1 += '<td  style="color:white">' + item.TOTALQTYTRADED +
-                            '</td>';
-                        updatedHtml1 += '<td  style="color:white">' + item.OPENINTERESTCHANGE +
-                            '</td>';
-                        updatedHtml1 += '<td  style="color:white">' + item.OPENINTEREST +
-                            '</td>';
+                        
+                            updatedHtml1 += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ?
+                            '-' : item.LASTTRADEPRICE) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item
+                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item.PRICECHANGEPERCENTAGE
+                        ) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ?
+                            '-' : item.TOTALQTYTRADED) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.OPENINTERESTCHANGE ==
+                            0 ? '-' : item.OPENINTERESTCHANGE) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.OPENINTEREST == 0 ?
+                            '-' : item.OPENINTEREST) + '</td>';
                         updatedHtml1 += '</tr>';
                     });
                     updatedHtml1 += '</table></div>';
@@ -446,15 +448,17 @@
                         console.log(item)
                         updatedHtml += '<tr>';
                         updatedHtml += '<td style="color:white">' + parseInt(key + 1) + '</td>';
-                        updatedHtml += '<td style="color:white">' + item.OPENINTEREST + '</td>';
-                        updatedHtml += '<td style="color:white">' + item.OPENINTERESTCHANGE +
-                            '</td>';
-                        updatedHtml += '<td style="color:white">' + item.TOTALQTYTRADED +
-                            '</td>';
-                        updatedHtml += '<td style="color:white">' + item.PRICECHANGEPERCENTAGE +
-                            '</td>';
-                        updatedHtml += '<td style="color:white">' + item.LASTTRADEPRICE +
-                            '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.OPENINTEREST == 0 ?
+                            '-' : item.OPENINTEREST) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.OPENINTERESTCHANGE ==
+                            0 ? '-' : item.OPENINTERESTCHANGE) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ?
+                            '-' : item.TOTALQTYTRADED) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item
+                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item.PRICECHANGEPERCENTAGE
+                        ) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ?
+                            '-' : item.LASTTRADEPRICE) + '</td>';
                         updatedHtml += '</tr>';
                     });
                     updatedHtml += '</table></div>';
@@ -467,16 +471,17 @@
                         updatedHtml1 +=
                             '<td  style="color:white; background-color: #22272f; border-bottom: hidden;" >' +
                             item.value + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + item.LASTTRADEPRICE +
-                            '</td>';
-                        updatedHtml1 += '<td style="color:white">' + item
-                            .PRICECHANGEPERCENTAGE + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + item.TOTALQTYTRADED +
-                            '</td>';
-                        updatedHtml1 += '<td style="color:white">' + item.OPENINTERESTCHANGE +
-                            '</td>';
-                        updatedHtml1 += '<td style="color:white">' + item.OPENINTEREST +
-                            '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ?
+                            '-' : item.LASTTRADEPRICE) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item
+                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item.PRICECHANGEPERCENTAGE
+                        ) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ?
+                            '-' : item.TOTALQTYTRADED) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.OPENINTERESTCHANGE ==
+                            0 ? '-' : item.OPENINTERESTCHANGE) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.OPENINTEREST == 0 ?
+                            '-' : item.OPENINTEREST) + '</td>';
                         updatedHtml1 += '</tr>';
                     });
                     updatedHtml1 += '</table></div>';
