@@ -176,7 +176,8 @@
                                 <td>
                                     {{ $value['OPENINTEREST'] == 0 ? '-' : $value['OPENINTEREST'] }}
                                 </td>
-                                <td>
+                                <td
+                                    style="color: {{ $value['OPENINTERESTCHANGE'] < 0 ? '#ff4c4c' : ($value['OPENINTERESTCHANGE'] > 0 ? '#0edb67' : 'white') }}">
                                     {{ $value['OPENINTERESTCHANGE'] == 0 ? '-' : $value['OPENINTERESTCHANGE'] }}
                                 </td>
 
@@ -261,9 +262,9 @@
                                 <td>
                                     {{ $value['TOTALQTYTRADED'] == 0 ? '-' : $value['TOTALQTYTRADED'] }}
                                 </td>
-                                <td>
+                                <td
+                                    style="color: {{ $value['OPENINTERESTCHANGE'] < 0 ? '#ff4c4c' : ($value['OPENINTERESTCHANGE'] > 0 ? '#0edb67' : 'white') }}">
                                     {{ $value['OPENINTERESTCHANGE'] == 0 ? '-' : $value['OPENINTERESTCHANGE'] }}
-                                </td>
                                 <td>
                                     {{ $value['OPENINTEREST'] == 0 ? '-' : $value['OPENINTEREST'] }}
                                 </td>
@@ -347,11 +348,21 @@
                         updatedHtml += '<tr>';
 
                         updatedHtml += '<td style="color:white">' + (key + 1) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item.OPENINTEREST == 0 ? '-' : item.OPENINTEREST) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item.OPENINTERESTCHANGE == 0 ? '-' : item.OPENINTERESTCHANGE) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ? '-' :item.TOTALQTYTRADED) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item.PRICECHANGEPERCENTAGE ==  0 ? '-' : item.PRICECHANGEPERCENTAGE) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ? '-' : item.LASTTRADEPRICE) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.OPENINTEREST == 0 ?
+                            '-' : item.OPENINTEREST) + '</td>';
+                        updatedHtml += '<td style="color: ' + (item.OPENINTERESTCHANGE < 0 ?
+                            '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')
+                        ) + '">';
+                        updatedHtml += (item.OPENINTERESTCHANGE == 0 ? '-' : item
+                            .OPENINTERESTCHANGE);
+                        updatedHtml += '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ?
+                            '-' : item.TOTALQTYTRADED) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item
+                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item.PRICECHANGEPERCENTAGE
+                        ) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ?
+                            '-' : item.LASTTRADEPRICE) + '</td>';
                         updatedHtml += '</tr>';
                     });
                     updatedHtml += '</table></div>';
@@ -364,11 +375,21 @@
                         updatedHtml1 +=
                             '<td style="color:white; background-color: #22272f; border-bottom: hidden;">' +
                             item.value + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ? '-' : item.LASTTRADEPRICE) + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item.PRICECHANGEPERCENTAGE ==  0 ? '-' : item.PRICECHANGEPERCENTAGE) + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ? '-' :item.TOTALQTYTRADED) + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item.OPENINTERESTCHANGE == 0 ? '-' : item.OPENINTERESTCHANGE) +'</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item.OPENINTEREST == 0 ? '-' : item.OPENINTEREST) +'</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ?
+                            '-' : item.LASTTRADEPRICE) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item
+                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item.PRICECHANGEPERCENTAGE
+                        ) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ?
+                            '-' : item.TOTALQTYTRADED) + '</td>';
+                        updatedHtml1 += '<td style="color: ' + (item.OPENINTERESTCHANGE < 0 ?
+                            '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')
+                        ) + '">';
+                        updatedHtml1 += (item.OPENINTERESTCHANGE == 0 ? '-' : item
+                            .OPENINTERESTCHANGE);
+                        updatedHtml += '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.OPENINTEREST == 0 ?
+                            '-' : item.OPENINTEREST) + '</td>';
                         updatedHtml1 += '</tr>';
                     });
                     updatedHtml1 += '</table></div>';
@@ -451,11 +472,21 @@
                         updatedHtml += '<tr>';
                         updatedHtml += '<td style="color:white">' + parseInt(key + 1) + '</td>';
 
-                        updatedHtml += '<td style="color:white">' + (item.OPENINTEREST == 0 ? '-' : item.OPENINTEREST) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item.OPENINTERESTCHANGE == 0 ? '-' : item.OPENINTERESTCHANGE) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ? '-' :item.TOTALQTYTRADED) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item.PRICECHANGEPERCENTAGE ==  0 ? '-' : item.PRICECHANGEPERCENTAGE) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ? '-' : item.LASTTRADEPRICE) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.OPENINTEREST == 0 ?
+                            '-' : item.OPENINTEREST) + '</td>';
+                        updatedHtml += '<td style="color: ' + (item.OPENINTERESTCHANGE < 0 ?
+                            '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')
+                        ) + '">';
+                        updatedHtml += (item.OPENINTERESTCHANGE == 0 ? '-' : item
+                            .OPENINTERESTCHANGE);
+                        updatedHtml += '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ?
+                            '-' : item.TOTALQTYTRADED) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item
+                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item.PRICECHANGEPERCENTAGE
+                        ) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ?
+                            '-' : item.LASTTRADEPRICE) + '</td>';
 
                         updatedHtml += '</tr>';
                     });
@@ -469,11 +500,22 @@
                         updatedHtml1 +=
                             '<td  style="color:white; background-color: #22272f; border-bottom: hidden;" >' +
                             item.value + '</td>';
-                            updatedHtml1 += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ? '-' : item.LASTTRADEPRICE) + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item.PRICECHANGEPERCENTAGE ==  0 ? '-' : item.PRICECHANGEPERCENTAGE) + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ? '-' :item.TOTALQTYTRADED) + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item.OPENINTERESTCHANGE == 0 ? '-' : item.OPENINTERESTCHANGE) +'</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item.OPENINTEREST == 0 ? '-' : item.OPENINTEREST) +'</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ?
+                            '-' : item.LASTTRADEPRICE) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item
+                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item.PRICECHANGEPERCENTAGE
+                        ) + '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ?
+                            '-' : item.TOTALQTYTRADED) + '</td>';
+                        updatedHtml1 += '<td style="color: ' + (item.OPENINTERESTCHANGE < 0 ?
+                            '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')
+                        ) + '">';
+                        updatedHtml1 += (item.OPENINTERESTCHANGE == 0 ? '-' : item
+                            .OPENINTERESTCHANGE);
+                        updatedHtml += '</td>';
+                        updatedHtml += '</td>';
+                        updatedHtml1 += '<td style="color:white">' + (item.OPENINTEREST == 0 ?
+                            '-' : item.OPENINTEREST) + '</td>';
                         updatedHtml1 += '</tr>';
 
                     });
