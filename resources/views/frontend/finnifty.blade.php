@@ -353,8 +353,7 @@
                         updatedHtml += '<td style="color: ' + (item.OPENINTERESTCHANGE < 0 ?
                             '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')
                         ) + '">';
-                        updatedHtml += (item.OPENINTERESTCHANGE == 0 ? '-' : item
-                            .OPENINTERESTCHANGE);
+                         
                         updatedHtml += '</td>';
                         updatedHtml += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ?
                             '-' : item.TOTALQTYTRADED) + '</td>';
@@ -385,8 +384,7 @@
                         updatedHtml1 += '<td style="color: ' + (item.OPENINTERESTCHANGE < 0 ?
                             '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')
                         ) + '">';
-                        updatedHtml1 += (item.OPENINTERESTCHANGE == 0 ? '-' : item
-                            .OPENINTERESTCHANGE);
+                        
                         updatedHtml += '</td>';
                         updatedHtml1 += '<td style="color:white">' + (item.OPENINTEREST == 0 ?
                             '-' : item.OPENINTEREST) + '</td>';
@@ -477,8 +475,7 @@
                         updatedHtml += '<td style="color: ' + (item.OPENINTERESTCHANGE < 0 ?
                             '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')
                         ) + '">';
-                        updatedHtml += (item.OPENINTERESTCHANGE == 0 ? '-' : item
-                            .OPENINTERESTCHANGE);
+                    
                         updatedHtml += '</td>';
                         updatedHtml += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ?
                             '-' : item.TOTALQTYTRADED) + '</td>';
@@ -510,8 +507,7 @@
                         updatedHtml1 += '<td style="color: ' + (item.OPENINTERESTCHANGE < 0 ?
                             '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')
                         ) + '">';
-                        updatedHtml1 += (item.OPENINTERESTCHANGE == 0 ? '-' : item
-                            .OPENINTERESTCHANGE);
+                        
                         updatedHtml += '</td>';
                         updatedHtml += '</td>';
                         updatedHtml1 += '<td style="color:white">' + (item.OPENINTEREST == 0 ?
