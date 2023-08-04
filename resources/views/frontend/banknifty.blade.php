@@ -271,27 +271,26 @@
                 {{-- --------------------------------------------------------------------------------------------------------------Calculate PCR and PCR strength --}}
 
                 <?php
-                function calculatePCRStrength($totalCallsOpenInterest, $totalPutsOpenInterest)
+                function calculatePCRStrength1($totalCallsOpenInterest, $totalPutsOpenInterest)
                 {
-                    $PCR = $totalCallsOpenInterest / $totalPutsOpenInterest;
+                    $PCR = $totalPutsOpenInterest / $totalCallsOpenInterest;
                 
-                    if ($PCR > 3) {
+                    if ($PCR >= 3) {
                         return ['PCR' => $PCR, 'PCRStrength' => 'Strong Bullish (Strong Support)'];
-                    } elseif ($PCR >= 1.5 && $PCR <= 3) {
+                    } elseif ($PCR > 1 && $PCR < 3) {
                         return ['PCR' => $PCR, 'PCRStrength' => 'Bullish'];
-                    } elseif ($PCR >= 0.5 && $PCR < 1.5) {
+                    } elseif ($PCR == 1) {
                         return ['PCR' => $PCR, 'PCRStrength' => 'Neutral'];
-                    } elseif ($PCR >= 0.33 && $PCR < 0.5) {
+                    } elseif ($PCR > 0.33 && $PCR < 1) {
                         return ['PCR' => $PCR, 'PCRStrength' => 'Bearish'];
-                    } else {
+                    } elseif ($PCR <= 0.33) {
                         return ['PCR' => $PCR, 'PCRStrength' => 'Strong Bearish (Strong Resistance)'];
+                    } else {
+                        return ['PCR' => $PCR, 'PCRStrength' => 'NOT A NUMBER'];
                     }
                 }
                 
-                // Assuming you have already calculated $totalCallsOpenInterest and $totalPutsOpenInterest
-                
-                // -----Calculate PCR and PCR strength
-                $PCRData = calculatePCRStrength($totalCallsOpenInterest, $totalPutsOpenInterest);
+                $PCRData = calculatePCRStrength1($totalCallsOpenInterest, $totalPutsOpenInterest);
                 $PCR = $PCRData['PCR'];
                 $PCRStrength = $PCRData['PCRStrength'];
                 
@@ -300,20 +299,31 @@
 
 
                 <!-- -------------------------------------------------------------------------------------------------------------Display the data in another table -->
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="color:#ffffff;background:#ffb020">PCR</th>
-                            <th style="color:#ffffff;background:#ffb020">PCR Strength</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td style="color:#ffffff;"><?php echo $PCR; ?></td>
-                            <td style="color:#ffffff;"><?php echo $PCRStrength; ?></td>
-                        </tr>
-                    </tbody>
-                </table>
+
+                <!-- Container to display updated data for calls -->
+                <div id="updated_call_container"></div>
+                <!-- Container to display updated data for puts -->
+                <div id="updated_put_container"></div>
+                <!-- Container to display updated PCR and PCR strength -->
+                <div id="updated_pcr_container"></div>
+
+                <div id="old_pcr_container">
+
+
+
+                    <div class="d-flex">
+                        <table>
+                            <tr>
+                                <td style="color:#ffffff;background:#ffb020">PCR</td>
+                                <td style="color:#ffffff;background:#ffb020">PCR Strength</td>
+                            </tr>
+                            <tr>
+                                <td style="color:#ffffff;"><?php echo $PCR; ?></td>
+                                <td style="color:#ffffff;"><?php echo $PCRStrength; ?></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
 
             </div>
         </div>
@@ -324,6 +334,42 @@
     {{-- ------------------------------------------------------------------------------------------------------------------------------------------------Expiry Date Function & Strike Price Function --}}
 
     <script type="text/javascript">
+        function calculatePCRStrength2(totalCallsOpenInterest, totalPutsOpenInterest) {
+            let PCR = totalPutsOpenInterest / totalCallsOpenInterest;
+
+            if (PCR >= 3) {
+                return {
+                    PCR: PCR,
+                    PCRStrength: 'Strong Bullish (Strong Support)'
+                };
+            } else if (PCR > 1 && PCR < 3) {
+                return {
+                    PCR: PCR,
+                    PCRStrength: 'Bullish'
+                };
+            } else if (PCR == 1) {
+                return {
+                    PCR: PCR,
+                    PCRStrength: 'Neutral'
+                };
+            } else if (PCR > 0.33 && PCR < 1) {
+                return {
+                    PCR: PCR,
+                    PCRStrength: 'Bearish'
+                };
+            } else if (PCR <= 0.33) {
+                return {
+                    PCR: PCR,
+                    PCRStrength: 'Strong Bearish (Strong Resistance)'
+                };
+            } else {
+                return {
+                    PCR: PCR,
+                    PCRStrength: 'NOT A NUMBER'
+                };
+            };
+        }
+
         $("#expiry_date").change(function() {
             const selectedOption = $(this).val();
             $.ajax({
@@ -349,8 +395,8 @@
                         updatedHtml += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ?
                             '-' : item.TOTALQTYTRADED) + '</td>';
                         updatedHtml += '<td style="color:white">' + (item
-                            .PRICECHANGEPERCENTAGE == 0 ?
-                            '-' : item.PRICECHANGEPERCENTAGE) + '</td>';
+                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item.PRICECHANGEPERCENTAGE
+                        ) + '</td>';
                         updatedHtml += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ?
                             '-' : item.LASTTRADEPRICE) + '</td>';
                         updatedHtml += '</tr>';
@@ -386,56 +432,33 @@
                     $("#updated_put_container").html(updatedHtml1);
                     $(".putCurrentData").hide();
 
-                    // Update the total counts for calls
+                    // Calculate PCR and PCR strength
                     let totalCallsOpenInterest = 0;
-                    let totalCallsOpenInterestChange = 0;
-                    let totalCallsTotalQtyTraded = 0;
+                    let totalPutsOpenInterest = 0;
+
                     response.callArr.forEach(function(item) {
                         totalCallsOpenInterest += item.OPENINTEREST;
-                        totalCallsOpenInterestChange += item.OPENINTERESTCHANGE;
-                        totalCallsTotalQtyTraded += item.TOTALQTYTRADED;
                     });
 
-                    // Update the total counts for puts
-                    let totalPutsOpenInterest = 0;
-                    let totalPutsOpenInterestChange = 0;
-                    let totalPutsTotalQtyTraded = 0;
                     response.putArr.forEach(function(item) {
                         totalPutsOpenInterest += item.OPENINTEREST;
-                        totalPutsOpenInterestChange += item.OPENINTERESTCHANGE;
-                        totalPutsTotalQtyTraded += item.TOTALQTYTRADED;
                     });
 
-                    // Update the total counts for calls and puts in the table
-                    let totalCallsHtml = '<tr>';
-                    totalCallsHtml += '<td></td>';
-                    totalCallsHtml += '<td style="color: #ffb020"> ' + totalCallsOpenInterest +
-                        ' oi</td>';
-                    totalCallsHtml += '<td  style="color: #ffb020">' + totalCallsOpenInterestChange +
-                        ' cioi</td>';
-                    totalCallsHtml += '<td  style="color: #ffb020">' + totalCallsTotalQtyTraded +
-                        ' Traded</td>';
-                    totalCallsHtml += '<td style="color:white">-</td>';
-                    totalCallsHtml += '<td style="color:white">-</td>';
-                    totalCallsHtml += '</tr>';
+                    // Calculate PCR and PCR strength
+                    let PCRData = calculatePCRStrength2(totalCallsOpenInterest, totalPutsOpenInterest);
+                    let PCR = PCRData['PCR'];
+                    let PCRStrength = PCRData['PCRStrength'];
 
-                    let totalPutsHtml = '<tr>';
-                    totalPutsHtml +=
-                        '<td style="background-color:#ffb020;;color: #000000;">-: Total :-</td>';
-                    totalPutsHtml += '<td style="color:white">-</td>';
-                    totalPutsHtml += '<td style="color:white">-</td>';
-                    totalPutsHtml += '<td style="color: #ffb020">' + totalPutsTotalQtyTraded +
-                        ' Traded</td>';
-                    totalPutsHtml += '<td style="color: #ffb020">' + totalPutsOpenInterestChange +
-                        ' cioi</td>';
-                    totalPutsHtml += '<td style="color: #ffb020">' + totalPutsOpenInterest + ' oi</td>';
-                    totalPutsHtml += '</tr>';
-
-                    // Append the total counts to the table
-                    $("#updated_call_container").append(totalCallsHtml);
-                    $("#updated_put_container").append(totalPutsHtml);
-
+                    // Update the PCR value in the table and hide the old PCR value
+                    $("#updated_pcr_container").html(
+                        '<div class="d-flex "><table><tr><td style="color:#ffffff;background:#ffb020;">PCR</td><td style="color:#ffffff;background:#ffb020;"">PCR Strength</td><td style="color:#ffffff;background:#ffb020;"">Updated ?</td></tr><tr><td style="color:#ffffff;">' +
+                        PCR +
+                        '</td><td style="color:#ffffff; " >' + PCRStrength +
+                        '</td><td style="color:#ffffff; " >' + "YES" +
+                        '</td></tr></table></div>');
+                    $("#old_pcr_container").hide(); // Add this line to hide the old PCR value
                     console.log(response);
+
                 },
                 error: function(error) {
                     console.log(error);
