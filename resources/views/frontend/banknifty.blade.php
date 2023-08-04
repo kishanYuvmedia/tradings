@@ -1,10 +1,9 @@
 @extends('frontend.layouts.master')
-
 @section('title', 'BankNifty')
 @section('content')
-    <?php
+@php
     use Carbon\Carbon;
-    ?>
+@endphp
 
 
 
@@ -38,6 +37,7 @@
                                         @endif
                                     </select>
                                 </div>
+                               
                             </div>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                         <div class="table-responsive">
                             <label for="expiry_date"><b style="color: #6c7687"> <span style="color:green">START </span>
                                     STRIKE PRICE :</b></label>
-                            <select style="width: 234px; height: 37px; color: #a37213;background-color:#121419"
+                            <select   style="width: 234px; height: 37px; color: #a37213;background-color:#121419"
                                 id="starting">
                                 @foreach ($putArr as $key => $value)
                                     <option value="{{ $value['value'] }}">{{ $value['value'] }}</option>
@@ -87,8 +87,9 @@
                             </select>
                         </div>
                         <button type="button" id="result" class="button-29">Result</button>
-
+                         
                     </div>
+                     <div id="updated_pcr_container"></div>
                 </div>
             </div>
 
@@ -305,25 +306,9 @@
                 <!-- Container to display updated data for puts -->
                 <div id="updated_put_container"></div>
                 <!-- Container to display updated PCR and PCR strength -->
-                <div id="updated_pcr_container"></div>
+               
 
-                <div id="old_pcr_container">
-
-
-
-                    <div class="d-flex">
-                        <table>
-                            <tr>
-                                <td style="color:#ffffff;background:#ffb020">PCR</td>
-                                <td style="color:#ffffff;background:#ffb020">PCR Strength</td>
-                            </tr>
-                            <tr>
-                                <td style="color:#ffffff;"><?php echo $PCR; ?></td>
-                                <td style="color:#ffffff;"><?php echo $PCRStrength; ?></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
+                
 
             </div>
         </div>
@@ -334,9 +319,16 @@
     {{-- ------------------------------------------------------------------------------------------------------------------------------------------------Expiry Date Function & Strike Price Function --}}
 
     <script type="text/javascript">
-        function calculatePCRStrength2(totalCallsOpenInterest, totalPutsOpenInterest) {
-            let PCR = totalPutsOpenInterest / totalCallsOpenInterest;
+         
+         $(document).ready(function(){
+          
+           
+         $("#updated_pcr_container").html('<div class="d-flex"><table><tr><td style="color:#ffffff;background:#ffb020">PCR</td><td style="color:#ffffff;background:#ffb020">PCR Strength</td></tr><tr><td style="color:#ffffff;" ><?php echo $PCR; ?></td><td style="color:#ffffff;"><?php echo $PCRStrength; ?></td></tr></table></div>');
+        
+        })
 
+    function calculatePCRStrength2(totalCallsOpenInterest, totalPutsOpenInterest) {
+            let PCR = totalPutsOpenInterest / totalCallsOpenInterest;
             if (PCR >= 3) {
                 return {
                     PCR: PCR,
@@ -371,6 +363,7 @@
         }
 
         $("#expiry_date").change(function() {
+             let strikePrice = [];
             const selectedOption = $(this).val();
             $.ajax({
                 url: '{{ URL::to('get-bankniftywithDt') }}/' + selectedOption,
@@ -404,9 +397,14 @@
                     updatedHtml += '</table></div>';
                     $("#updated_call_container").html(updatedHtml);
                     $(".callCurrentData").hide();
-
+                    let strikeRange = '';
                     let updatedHtml1 = '<div class="d-flex "><table>';
                     response.putArr.forEach(function(item) {
+                            strikeRange+='<option>'+item.value+'</option>';
+                           strikePrice.push(item.value);
+
+                           $('#starting').html('<option></option>')
+
                         updatedHtml1 += '<tr>';
                         updatedHtml1 +=
                             '<td style="color:white; background-color: #22272f; border-bottom: hidden;">' +
@@ -428,6 +426,8 @@
                             '-' : item.OPENINTEREST) + '</td>';
                         updatedHtml1 += '</tr>';
                     });
+                    $('#starting').html(strikeRange);
+                    $('#ending').html(strikeRange);
                     updatedHtml1 += '</table></div>';
                     $("#updated_put_container").html(updatedHtml1);
                     $(".putCurrentData").hide();
@@ -435,14 +435,51 @@
                     // Calculate PCR and PCR strength
                     let totalCallsOpenInterest = 0;
                     let totalPutsOpenInterest = 0;
-
+                    let totalCallsOpenInterestChange = 0;
+                    let totalCallsTotalQtyTraded = 0;
                     response.callArr.forEach(function(item) {
                         totalCallsOpenInterest += item.OPENINTEREST;
+                          totalCallsOpenInterestChange += item.OPENINTERESTCHANGE;
+                        totalCallsTotalQtyTraded += item.TOTALQTYTRADED;
                     });
+                    
+                      
+                    let totalPutsOpenInterestChange = 0;
+                    let totalPutsTotalQtyTraded = 0;
 
                     response.putArr.forEach(function(item) {
-                        totalPutsOpenInterest += item.OPENINTEREST;
+                         totalPutsOpenInterest += item.OPENINTEREST;
+                        totalPutsOpenInterestChange += item.OPENINTERESTCHANGE;
+                        totalPutsTotalQtyTraded += item.TOTALQTYTRADED;
                     });
+                     let totalCallsHtml = '<tr>';
+                    totalCallsHtml += '<td></td>';
+                    totalCallsHtml += '<td style="color: #ffb020"> ' + totalCallsOpenInterest +
+                        ' oi</td>';
+                    totalCallsHtml += '<td  style="color: #ffb020">' + totalCallsOpenInterestChange +
+                        ' cioi</td>';
+                    totalCallsHtml += '<td  style="color: #ffb020">' + totalCallsTotalQtyTraded +
+                        ' Traded</td>';
+                    totalCallsHtml += '<td style="color:white">-</td>';
+                    totalCallsHtml += '<td style="color:white">-</td>';
+                    totalCallsHtml += '</tr>';
+
+
+                      let totalPutsHtml = '<tr>';
+                    totalPutsHtml +=
+                        '<td style="background-color:#ffb020;;color: #000000;">-: Total :-</td>';
+                    totalPutsHtml += '<td style="color:white">-</td>';
+                    totalPutsHtml += '<td style="color:white">-</td>';
+                    totalPutsHtml += '<td style="color: #ffb020">' + totalPutsTotalQtyTraded +
+                        ' Traded</td>';
+                    totalPutsHtml += '<td style="color: #ffb020">' + totalPutsOpenInterestChange +
+                        ' cioi</td>';
+                    totalPutsHtml += '<td style="color: #ffb020">' + totalPutsOpenInterest + ' oi</td>';
+                    totalPutsHtml += '</tr>';
+                    // Append the total counts to the table
+                    $("#updated_call_container").append(totalCallsHtml);
+                    $("#updated_put_container").append(totalPutsHtml);
+
 
                     // Calculate PCR and PCR strength
                     let PCRData = calculatePCRStrength2(totalCallsOpenInterest, totalPutsOpenInterest);
@@ -456,14 +493,14 @@
                         '</td><td style="color:#ffffff; " >' + PCRStrength +
                         '</td><td style="color:#ffffff; " >' + "YES" +
                         '</td></tr></table></div>');
-                    $("#old_pcr_container").hide(); // Add this line to hide the old PCR value
-                    console.log(response);
-
-                },
+                         console.log(strikePrice)
+                    },
                 error: function(error) {
                     console.log(error);
                 }
             });
+
+           
         });
 
 
@@ -483,8 +520,12 @@
                 },
                 success: function(response) {
                     let updatedHtml = '<div class="d-flex "><table>';
+
+                    let totalCallsOpenInterest1 = 0;
+                    let totalPutsOpenInterest1 = 0;
+
                     response.callArr.forEach(function(item, key) {
-                        console.log(item)
+                          totalCallsOpenInterest1 += item.OPENINTEREST;
                         updatedHtml += '<tr>';
                         updatedHtml += '<td style="color:white">' + parseInt(key + 1) + '</td>';
                         updatedHtml += '<td style="color:white">' + (item.OPENINTEREST == 0 ?
@@ -510,6 +551,10 @@
 
                     let updatedHtml1 = '<div class="d-flex "><table>';
                     response.putArr.forEach(function(item) {
+                         totalPutsOpenInterest1 += item.OPENINTEREST;
+                        
+
+                         
                         updatedHtml1 += '<tr>';
                         updatedHtml1 +=
                             '<td  style="color:white; background-color: #22272f; border-bottom: hidden;" >' +
@@ -531,7 +576,22 @@
                             '-' : item.OPENINTEREST) + '</td>';
                         updatedHtml1 += '</tr>';
                     });
+
+
+                    let PCRData = calculatePCRStrength2(totalCallsOpenInterest1, totalPutsOpenInterest1);
+                    let PCR = PCRData['PCR'];
+                    let PCRStrength = PCRData['PCRStrength'];
+
+
                     updatedHtml1 += '</table></div>';
+
+                    $("#updated_pcr_container").html(
+                        '<div class="d-flex "><table><tr><td style="color:#ffffff;background:#ffb020;">PCR</td><td style="color:#ffffff;background:#ffb020;"">PCR Strength</td><td style="color:#ffffff;background:#ffb020;"">Updated ?</td></tr><tr><td style="color:#ffffff;">' +
+                        PCR +
+                        '</td><td style="color:#ffffff; " >' + PCRStrength +
+                        '</td><td style="color:#ffffff; " >' + "YES" +
+                        '</td></tr></table></div>');
+                         
 
                     console.log(updatedHtml1)
                     $("#updated_put_container").html(updatedHtml1);
@@ -609,6 +669,8 @@
             });
 
         })
+
+     
     </script>
 
 
