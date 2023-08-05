@@ -63,12 +63,14 @@
             <div class="col-md-12 col-sm-12">
                 <div class="main-card mb-3 card">
                     <div class="card-body d-flex" style="width: 915px;">
+                        <!-- Dropdown for starting strike price -->
                         <div class="table-responsive">
                             <label for="expiry_date">
                                 <b style="color: #6c7687"> <span style="color:green">START </span>STRIKE PRICE :</b>
                             </label>
                             <select style="width: 234px; height: 37px; color: #a37213;background-color:#121419"
                                 id="starting">
+                                <!-- Populate options from $putArr -->
                                 @foreach ($putArr as $key => $value)
                                     <option value="{{ $value['value'] }}">{{ $value['value'] }}</option>
                                 @endforeach
@@ -76,6 +78,7 @@
 
                             </select>
                         </div>
+                        <!-- Dropdown for ending strike price -->
                         <div class="table-responsive">
                             <label for="expiry_date"></label>
                             <b style="color: #6c7687"><span style="color:red">END </span> STRIKEPRICE :</b>
@@ -83,11 +86,13 @@
 
                             <select style="width: 234px; height: 37px; color: #a37213;background-color:#121419"
                                 id="ending">
+                                <!-- Populate options from $putArr -->
                                 @foreach ($putArr as $key => $value)
                                     <option value="{{ $value['value'] }}">{{ $value['value'] }}</option>
                                 @endforeach
                             </select>
                         </div>
+                        <!-- Button to trigger the result -->
                         <button type="button" id="result" class="button-29">Result</button>
                     </div>
 
@@ -348,7 +353,44 @@
                 '<div class="d-flex"><table><tr><td style="color:#ffffff;background:#ffb020">PCR</td><td style="color:#ffffff;background:#ffb020">PCR Strength</td></tr><tr><td style="color:#ffffff;" ><?php echo $PCR; ?></td><td style="color:#ffffff;"><?php echo $PCRStrength; ?></td></tr></table></div>'
             );
 
-        })
+            // Choosing starting strike updates ending strike.
+            // Function to update the ending strike price dropdown when starting strike price changes
+            $("#starting").change(function() {
+                // Get the selected value of the starting strike price dropdown
+                const selectedStartingStrikePrice = parseFloat($(this).val());
+
+                // Show only options in the ending strike price dropdown that are strictly greater than the selected value
+                $("#ending option").each(function() {
+                    const endingStrikePrice = parseFloat($(this).val());
+                    if (endingStrikePrice >= selectedStartingStrikePrice) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+
+
+                // If the currently selected value in the ending strike price dropdown is less than or equal to the selected value in the starting strike price dropdown, change the selected value to the first greater option
+                const selectedEndingStrikePrice = parseFloat($("#ending").val());
+                if (selectedEndingStrikePrice < selectedStartingStrikePrice) {
+                    let found = false;
+                    $("#ending option").each(function() {
+                        const endingStrikePrice = parseFloat($(this).val());
+
+                        if (endingStrikePrice >= selectedStartingStrikePrice && !found) {
+                            $("#ending").val(endingStrikePrice);
+                            found = true; // Break the loop after setting the new value
+                        }
+                    });
+                }
+            });
+
+        });
+
+
+
+
 
 
         // This function calculatePCRStrength2 
@@ -407,23 +449,30 @@
                     response.callArr.forEach(function(item, key) {
                         updatedHtml += '<tr>';
 
-                        updatedHtml += '<td style="color:white">' + (key + 1) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item.OPENINTEREST == 0 ?
+                        updatedHtml += '<td style="color:white">' + (key + 1) +
+                            '</td>';
+                        updatedHtml += '<td style="color:white">' + (item
+                            .OPENINTEREST == 0 ?
                             '-' : item.OPENINTEREST) + '</td>';
 
-                        updatedHtml += '<td style="color: ' + (item.OPENINTERESTCHANGE < 0 ?
-                            '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')
+                        updatedHtml += '<td style="color: ' + (item
+                            .OPENINTERESTCHANGE < 0 ?
+                            '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ?
+                                '#0edb67' : 'white')
                         ) + '">';
                         updatedHtml += (item.OPENINTERESTCHANGE == 0 ? '-' : item
                             .OPENINTERESTCHANGE);
                         updatedHtml += '</td>';
 
-                        updatedHtml += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ?
+                        updatedHtml += '<td style="color:white">' + (item
+                            .TOTALQTYTRADED == 0 ?
                             '-' : item.TOTALQTYTRADED) + '</td>';
                         updatedHtml += '<td style="color:white">' + (item
-                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item.PRICECHANGEPERCENTAGE
+                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item
+                            .PRICECHANGEPERCENTAGE
                         ) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ?
+                        updatedHtml += '<td style="color:white">' + (item
+                            .LASTTRADEPRICE == 0 ?
                             '-' : item.LASTTRADEPRICE) + '</td>';
                         updatedHtml += '</tr>';
                     });
@@ -448,20 +497,26 @@
                         updatedHtml1 +=
                             '<td style="color:white; background-color: #22272f; border-bottom: hidden;">' +
                             item.value + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ?
+                        updatedHtml1 += '<td style="color:white">' + (item
+                            .LASTTRADEPRICE == 0 ?
                             '-' : item.LASTTRADEPRICE) + '</td>';
                         updatedHtml1 += '<td style="color:white">' + (item
-                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item.PRICECHANGEPERCENTAGE
+                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item
+                            .PRICECHANGEPERCENTAGE
                         ) + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ?
+                        updatedHtml1 += '<td style="color:white">' + (item
+                            .TOTALQTYTRADED == 0 ?
                             '-' : item.TOTALQTYTRADED) + '</td>';
-                        updatedHtml1 += '<td style="color: ' + (item.OPENINTERESTCHANGE < 0 ?
-                            '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')
+                        updatedHtml1 += '<td style="color: ' + (item
+                            .OPENINTERESTCHANGE < 0 ?
+                            '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ?
+                                '#0edb67' : 'white')
                         ) + '">';
                         updatedHtml1 += (item.OPENINTERESTCHANGE == 0 ? '-' : item
                             .OPENINTERESTCHANGE);
                         updatedHtml += '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item.OPENINTEREST == 0 ?
+                        updatedHtml1 += '<td style="color:white">' + (item
+                            .OPENINTEREST == 0 ?
                             '-' : item.OPENINTEREST) + '</td>';
                         updatedHtml1 += '</tr>';
                     });
@@ -493,11 +548,14 @@
                     });
                     let totalCallsHtml = '<tr>';
                     totalCallsHtml += '<td></td>';
-                    totalCallsHtml += '<td style="color: #ffb020"> ' + totalCallsOpenInterest +
+                    totalCallsHtml += '<td style="color: #ffb020"> ' +
+                        totalCallsOpenInterest +
                         ' oi</td>';
-                    totalCallsHtml += '<td  style="color: #ffb020">' + totalCallsOpenInterestChange +
+                    totalCallsHtml += '<td  style="color: #ffb020">' +
+                        totalCallsOpenInterestChange +
                         ' cioi</td>';
-                    totalCallsHtml += '<td  style="color: #ffb020">' + totalCallsTotalQtyTraded +
+                    totalCallsHtml += '<td  style="color: #ffb020">' +
+                        totalCallsTotalQtyTraded +
                         ' Traded</td>';
                     totalCallsHtml += '<td style="color:white">-</td>';
                     totalCallsHtml += '<td style="color:white">-</td>';
@@ -509,11 +567,14 @@
                         '<td style="background-color:#ffb020;;color: #000000;">-: Total :-</td>';
                     totalPutsHtml += '<td style="color:white">-</td>';
                     totalPutsHtml += '<td style="color:white">-</td>';
-                    totalPutsHtml += '<td style="color: #ffb020">' + totalPutsTotalQtyTraded +
+                    totalPutsHtml += '<td style="color: #ffb020">' +
+                        totalPutsTotalQtyTraded +
                         ' Traded</td>';
-                    totalPutsHtml += '<td style="color: #ffb020">' + totalPutsOpenInterestChange +
+                    totalPutsHtml += '<td style="color: #ffb020">' +
+                        totalPutsOpenInterestChange +
                         ' cioi</td>';
-                    totalPutsHtml += '<td style="color: #ffb020">' + totalPutsOpenInterest + ' oi</td>';
+                    totalPutsHtml += '<td style="color: #ffb020">' + totalPutsOpenInterest +
+                        ' oi</td>';
                     totalPutsHtml += '</tr>';
                     // Append the total counts to the table
                     $("#updated_call_container").append(totalCallsHtml);
@@ -521,7 +582,8 @@
 
 
                     // Calculate PCR and PCR strength
-                    let PCRData = calculatePCRStrength2(totalCallsOpenInterest, totalPutsOpenInterest);
+                    let PCRData = calculatePCRStrength2(totalCallsOpenInterest,
+                        totalPutsOpenInterest);
                     let PCR = PCRData['PCR'];
                     let PCRStrength = PCRData['PCRStrength'];
 
@@ -568,21 +630,28 @@
                     response.callArr.forEach(function(item, key) {
                         totalCallsOpenInterest1 += item.OPENINTEREST;
                         updatedHtml += '<tr>';
-                        updatedHtml += '<td style="color:white">' + parseInt(key + 1) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item.OPENINTEREST == 0 ?
+                        updatedHtml += '<td style="color:white">' + parseInt(key +
+                            1) + '</td>';
+                        updatedHtml += '<td style="color:white">' + (item
+                            .OPENINTEREST == 0 ?
                             '-' : item.OPENINTEREST) + '</td>';
-                        updatedHtml += '<td style="color: ' + (item.OPENINTERESTCHANGE < 0 ?
-                            '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')
+                        updatedHtml += '<td style="color: ' + (item
+                            .OPENINTERESTCHANGE < 0 ?
+                            '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ?
+                                '#0edb67' : 'white')
                         ) + '">';
                         updatedHtml += (item.OPENINTERESTCHANGE == 0 ? '-' : item
                             .OPENINTERESTCHANGE);
                         updatedHtml += '</td>';
-                        updatedHtml += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ?
+                        updatedHtml += '<td style="color:white">' + (item
+                            .TOTALQTYTRADED == 0 ?
                             '-' : item.TOTALQTYTRADED) + '</td>';
                         updatedHtml += '<td style="color:white">' + (item
-                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item.PRICECHANGEPERCENTAGE
+                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item
+                            .PRICECHANGEPERCENTAGE
                         ) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ?
+                        updatedHtml += '<td style="color:white">' + (item
+                            .LASTTRADEPRICE == 0 ?
                             '-' : item.LASTTRADEPRICE) + '</td>';
                         updatedHtml += '</tr>';
                     });
@@ -600,20 +669,26 @@
                         updatedHtml1 +=
                             '<td  style="color:white; background-color: #22272f; border-bottom: hidden;" >' +
                             item.value + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item.LASTTRADEPRICE == 0 ?
+                        updatedHtml1 += '<td style="color:white">' + (item
+                            .LASTTRADEPRICE == 0 ?
                             '-' : item.LASTTRADEPRICE) + '</td>';
                         updatedHtml1 += '<td style="color:white">' + (item
-                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item.PRICECHANGEPERCENTAGE
+                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item
+                            .PRICECHANGEPERCENTAGE
                         ) + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item.TOTALQTYTRADED == 0 ?
+                        updatedHtml1 += '<td style="color:white">' + (item
+                            .TOTALQTYTRADED == 0 ?
                             '-' : item.TOTALQTYTRADED) + '</td>';
-                        updatedHtml1 += '<td style="color: ' + (item.OPENINTERESTCHANGE < 0 ?
-                            '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')
+                        updatedHtml1 += '<td style="color: ' + (item
+                            .OPENINTERESTCHANGE < 0 ?
+                            '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ?
+                                '#0edb67' : 'white')
                         ) + '">';
                         updatedHtml1 += (item.OPENINTERESTCHANGE == 0 ? '-' : item
                             .OPENINTERESTCHANGE);
                         updatedHtml += '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item.OPENINTEREST == 0 ?
+                        updatedHtml1 += '<td style="color:white">' + (item
+                            .OPENINTEREST == 0 ?
                             '-' : item.OPENINTEREST) + '</td>';
                         updatedHtml1 += '</tr>';
                     });
@@ -665,11 +740,14 @@
                     // Update the total counts for calls and puts in the table
                     let totalCallsHtml = '<tr>';
                     totalCallsHtml += '<td style="color:white">-</td>';
-                    totalCallsHtml += '<td style="color:#ffb020">' + totalCallsOpenInterest +
+                    totalCallsHtml += '<td style="color:#ffb020">' +
+                        totalCallsOpenInterest +
                         ' oi</td>';
-                    totalCallsHtml += '<td style="color:#ffb020">' + totalCallsOpenInterestChange +
+                    totalCallsHtml += '<td style="color:#ffb020">' +
+                        totalCallsOpenInterestChange +
                         ' cioi</td>';
-                    totalCallsHtml += '<td style="color:#ffb020">' + totalCallsTotalQtyTraded +
+                    totalCallsHtml += '<td style="color:#ffb020">' +
+                        totalCallsTotalQtyTraded +
                         ' Traded</td>';
                     totalCallsHtml += '<td style="color:white">-</td>';
                     totalCallsHtml += '<td style="color:white">-</td>';
@@ -680,11 +758,14 @@
                         '<td style="background-color:#ffb020;;color: #000000;">-: Total :-</td>';
                     totalPutsHtml += '<td style="color:white">-</td>';
                     totalPutsHtml += '<td style="color:white">-</td>';
-                    totalPutsHtml += '<td style="color:#ffb020">' + totalPutsTotalQtyTraded +
+                    totalPutsHtml += '<td style="color:#ffb020">' +
+                        totalPutsTotalQtyTraded +
                         ' Traded</td>';
-                    totalPutsHtml += '<td style="color:#ffb020">' + totalPutsOpenInterestChange +
+                    totalPutsHtml += '<td style="color:#ffb020">' +
+                        totalPutsOpenInterestChange +
                         ' cioi</td>';
-                    totalPutsHtml += '<td style="color:#ffb020">' + totalPutsOpenInterest + ' oi</td>';
+                    totalPutsHtml += '<td style="color:#ffb020">' + totalPutsOpenInterest +
+                        ' oi</td>';
                     totalPutsHtml += '</tr>';
 
                     // Append the total counts to the table
