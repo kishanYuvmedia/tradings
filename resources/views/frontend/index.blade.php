@@ -3,17 +3,37 @@
 @section('title', 'Finnifty')
 @section('content')
 
+
+
+
+
+
+
+
     <div class="app-page-title">
         <div class="page-title-wrapper">
             <div class="page-title-heading">
                 <div class="page-title-icon">
-                    <i class="pe-7s-users icon-gradient bg-mean-fruit"> </i>
+                    <i class="pe-7s-graph2"> </i>
                 </div>
-                <div>SCALPING PRICE </div>
-               
+
+                <div style="display: flex">
+                    <div class="col-md-11 col-sm-1" style="color:white;font-family: -webkit-body;font-size: 49px;margin-top: -20px;color: powderblue;">Trend Sarthi</div>
+                    <div class="col-md-1 col-sm-1">
+                        <div class="main-card mb-3 card">
+                            <div class="card-body" style="width: 915px;">
+                                
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
+
+
     <div class="row">
         <div class="col-md-12 col-sm-12">
             <div class="main-card mb-3 card">
