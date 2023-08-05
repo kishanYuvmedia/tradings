@@ -188,9 +188,41 @@
 
                             <tr>
                                 <td style="background-color: #121419;">-</td>
-                                <td style="color: #ffb020"><b>{{ $totalCallsOpenInterest }} oi</b></td>
-                                <td style="color: #ffb020"><b>{{ $totalCallsOpenInterestChange }}cioi</b></td>
-                                <td style="color: #ffb020"><b>{{ $totalCallsTotalQtyTraded }} </b> Traded </td>
+                                <td style="color: #ffb020">
+                                    <b>
+                                        @if ($totalCallsOpenInterest >= 10000000)
+                                            {{ number_format($totalCallsOpenInterest / 10000000, 2) }} Cr [OI]
+                                        @elseif ($totalCallsOpenInterest >= 100000)
+                                            {{ number_format($totalCallsOpenInterest / 100000, 2) }} L [OI]
+                                        @else
+                                            {{ $totalCallsOpenInterest }} oi
+                                        @endif
+                                    </b>
+                                </td>
+                                <td style="color: #ffb020">
+                                    <b>
+                                        @if ($totalCallsOpenInterestChange >= 10000000)
+                                            {{ number_format($totalCallsOpenInterestChange / 10000000, 2) }} Cr [CIOI]
+                                        @elseif ($totalCallsOpenInterestChange >= 100000)
+                                            {{ number_format($totalCallsOpenInterestChange / 100000, 2) }} L [CIOI]
+                                        @else
+                                            {{ $totalCallsOpenInterestChange }} cioi
+                                        @endif
+
+
+                                    </b>
+                                </td>
+                                <td style="color: #ffb020">
+                                    <b>
+                                        @if ($totalCallsTotalQtyTraded >= 10000000)
+                                            {{ number_format($totalCallsTotalQtyTraded / 10000000, 2) }} Cr [Traded]
+                                        @elseif ($totalCallsTotalQtyTraded >= 100000)
+                                            {{ number_format($totalCallsTotalQtyTraded / 100000, 2) }} L [CIOI]
+                                        @else
+                                            {{ $totalCallsTotalQtyTraded }} cioi
+                                        @endif
+                                    </b>
+                                </td>
                                 <td style="background-color: #121419;">-</td>
                                 <td style="background-color: #121419;">-</td>
                             </tr>
@@ -270,9 +302,45 @@
                                 <td rowspan="2" style="background-color: #121419">-</td>
 
                                 <td style="background-color: #121419">-</td>
-                                <td style="color: #ffb020"><b> {{ $totalPutsTotalQtyTraded }} Traded</td>
-                                <td style="color: #ffb020"><b>{{ $totalPutsOpenInterestChange }} cioi</b></td>
-                                <td style="color: #ffb020"><b>{{ $totalPutsOpenInterest }} oi</b></td>
+
+
+
+
+
+
+                                <td style="color: #ffb020">
+                                    <b>
+                                        @if ($totalPutsTotalQtyTraded >= 10000000)
+                                            {{ number_format($totalPutsTotalQtyTraded / 10000000, 2) }} Cr [CIOI]
+                                        @elseif ($totalPutsTotalQtyTraded >= 100000)
+                                            {{ number_format($totalPutsTotalQtyTraded / 100000, 2) }} L [CIOI]
+                                        @else
+                                            {{ $totalPutsTotalQtyTraded }} cioi
+                                        @endif
+
+
+                                    </b>
+                                </td>
+                                <td style="color: #ffb020"><b>
+                                        @if ($totalPutsOpenInterestChange >= 10000000)
+                                            {{ number_format($totalPutsOpenInterestChange / 10000000, 2) }} Cr [Traded]
+                                        @elseif ($totalPutsOpenInterestChange >= 100000)
+                                            {{ number_format($totalPutsOpenInterestChange / 100000, 2) }} L [CIOI]
+                                        @else
+                                            {{ $totalPutsOpenInterestChange }} cioi
+                                        @endif
+                                </td>
+                                <td style="color: #ffb020">
+                                    <b>
+                                        @if ($totalPutsOpenInterest >= 10000000)
+                                            {{ number_format($totalPutsOpenInterest / 10000000, 2) }} Cr [Traded]
+                                        @elseif ($totalPutsOpenInterest >= 100000)
+                                            {{ number_format($totalPutsOpenInterest / 100000, 2) }} L [CIOI]
+                                        @else
+                                            {{ $totalPutsOpenInterest }} cioi
+                                        @endif
+                                    </b>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -548,9 +616,30 @@
                     });
                     let totalCallsHtml = '<tr>';
                     totalCallsHtml += '<td></td>';
-                    totalCallsHtml += '<td style="color: #ffb020"> ' +
-                        totalCallsOpenInterest +
+
+                    // ----------------------------------------------------------total value in ajax
+
+                    //                     function formatInterest(value) {
+                    //     if (value >= 10000000) {
+                    //         return (value / 10000000).toFixed(2) + ' Cr';
+                    //     } else if (value >= 100000) {
+                    //         return (value / 100000).toFixed(2) + ' L';
+                    //     } else {
+                    //         return value + ' oi';
+                    //     }
+                    // }
+
+                    // var formattedInterest = formatInterest(totalCallsOpenInterest);
+                    // var formattedInterestChange = formatInterest(totalCallsOpenInterestChange);
+
+
+                    totalCallsHtml += '<td style="color: #ffb020"> ' + totalCallsOpenInterest +
                         ' oi</td>';
+
+
+
+
+
                     totalCallsHtml += '<td  style="color: #ffb020">' +
                         totalCallsOpenInterestChange +
                         ' cioi</td>';
