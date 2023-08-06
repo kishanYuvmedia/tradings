@@ -24,7 +24,7 @@
                             <div class="card-body" style="width: 915px;">
                                 <div class="table-responsive">
                                     <label for="expiry_date" class="lable-expiry-date"><b>Select Expiry:</b></label>
-                                    <select style="width: 234px; height: 37px; color: #a37213;background-color:#121419""
+                                    <select style="width: 234px; height: 37px; color: #a37213;background-color:#121419"
                                         id="expiry_date">
                                         <option value="" selected>Options</option>
                                         @if (isset($expAray) && is_array($expAray) && count($expAray) > 0)
@@ -418,7 +418,7 @@
 
 
             $("#updated_pcr_container").html(
-                '<div class="d-flex"><table><tr><td style="color:#ffffff;background:#ffb020">PCR</td><td style="color:#ffffff;background:#ffb020">PCR Strength</td></tr><tr><td style="color:#ffffff;" ><?php echo $PCR; ?></td><td style="color:#ffffff;"><?php echo $PCRStrength; ?></td></tr></table></div>'
+                '<div class="d-flex"><table><tr><td style="color:#ffffff;background:#ffb020">PCR</td><td style="color:#ffffff;background:#ffb020">PCR Strength</td></tr><tr><td style="color:#ffffff;" ><?php echo number_format($PCR, 2); ?></td><td style="color:#ffffff;"><?php echo $PCRStrength; ?></td></tr></table></div>'
             );
 
             // Choosing starting strike updates ending strike.
@@ -681,7 +681,7 @@
                     // Calculate PCR and PCR strength
                     let PCRData = calculatePCRStrength2(totalCallsOpenInterest,
                         totalPutsOpenInterest);
-                    let PCR = PCRData['PCR'];
+                     var PCR = PCRData['PCR'].toFixed(2);
                     let PCRStrength = PCRData['PCRStrength'];
 
                     // Update the PCR value in the table and hide the old PCR value
@@ -793,7 +793,7 @@
 
                     let PCRData = calculatePCRStrength2(totalCallsOpenInterest1,
                         totalPutsOpenInterest1);
-                    let PCR = PCRData['PCR'];
+                  var PCR = PCRData['PCR'].toFixed(2);
                     let PCRStrength = PCRData['PCRStrength'];
 
 
