@@ -195,7 +195,7 @@
                                         @elseif ($totalCallsOpenInterest >= 100000)
                                             {{ number_format($totalCallsOpenInterest / 100000, 2) }} L [OI]
                                         @else
-                                            {{ $totalCallsOpenInterest }} oi
+                                            {{ $totalCallsOpenInterest }} [OI]
                                         @endif
                                     </b>
                                 </td>
@@ -206,7 +206,7 @@
                                         @elseif ($totalCallsOpenInterestChange >= 100000)
                                             {{ number_format($totalCallsOpenInterestChange / 100000, 2) }} L [CIOI]
                                         @else
-                                            {{ $totalCallsOpenInterestChange }} cioi
+                                            {{ $totalCallsOpenInterestChange }} [CIOI]
                                         @endif
 
 
@@ -217,9 +217,9 @@
                                         @if ($totalCallsTotalQtyTraded >= 10000000)
                                             {{ number_format($totalCallsTotalQtyTraded / 10000000, 2) }} Cr [Traded]
                                         @elseif ($totalCallsTotalQtyTraded >= 100000)
-                                            {{ number_format($totalCallsTotalQtyTraded / 100000, 2) }} L [CIOI]
+                                            {{ number_format($totalCallsTotalQtyTraded / 100000, 2) }} L [Traded]
                                         @else
-                                            {{ $totalCallsTotalQtyTraded }} cioi
+                                            {{ $totalCallsTotalQtyTraded }} [Traded]
                                         @endif
                                     </b>
                                 </td>
@@ -311,11 +311,11 @@
                                 <td style="color: #ffb020">
                                     <b>
                                         @if ($totalPutsTotalQtyTraded >= 10000000)
-                                            {{ number_format($totalPutsTotalQtyTraded / 10000000, 2) }} Cr [CIOI]
+                                            {{ number_format($totalPutsTotalQtyTraded / 10000000, 2) }} Cr [Traded]
                                         @elseif ($totalPutsTotalQtyTraded >= 100000)
-                                            {{ number_format($totalPutsTotalQtyTraded / 100000, 2) }} L [CIOI]
+                                            {{ number_format($totalPutsTotalQtyTraded / 100000, 2) }} L [Traded]
                                         @else
-                                            {{ $totalPutsTotalQtyTraded }} cioi
+                                            {{ $totalPutsTotalQtyTraded }} [Traded]
                                         @endif
 
 
@@ -323,21 +323,21 @@
                                 </td>
                                 <td style="color: #ffb020"><b>
                                         @if ($totalPutsOpenInterestChange >= 10000000)
-                                            {{ number_format($totalPutsOpenInterestChange / 10000000, 2) }} Cr [Traded]
+                                            {{ number_format($totalPutsOpenInterestChange / 10000000, 2) }} Cr [CIOI]
                                         @elseif ($totalPutsOpenInterestChange >= 100000)
                                             {{ number_format($totalPutsOpenInterestChange / 100000, 2) }} L [CIOI]
                                         @else
-                                            {{ $totalPutsOpenInterestChange }} cioi
+                                            {{ $totalPutsOpenInterestChange }} [CIOI]
                                         @endif
                                 </td>
                                 <td style="color: #ffb020">
                                     <b>
                                         @if ($totalPutsOpenInterest >= 10000000)
-                                            {{ number_format($totalPutsOpenInterest / 10000000, 2) }} Cr [Traded]
+                                            {{ number_format($totalPutsOpenInterest / 10000000, 2) }} Cr [Oi]
                                         @elseif ($totalPutsOpenInterest >= 100000)
-                                            {{ number_format($totalPutsOpenInterest / 100000, 2) }} L [CIOI]
+                                            {{ number_format($totalPutsOpenInterest / 100000, 2) }} L  [Oi]
                                         @else
-                                            {{ $totalPutsOpenInterest }} cioi
+                                            {{ $totalPutsOpenInterest }}  [Oi]
                                         @endif
                                     </b>
                                 </td>
@@ -619,15 +619,15 @@
 
                     // -----------------------------------total value in ajax function
 
-                      function formatInterest(value) {
-                      if (value >= 10000000) {
-                          return (value / 10000000).toFixed(2) + ' Cr';
-                      } else if (value >= 100000) {
-                          return (value / 100000).toFixed(2) + ' L';
-                      } else {
-                          return value + ' oi';
-                      }
-                  }
+                    function formatInterest(value) {
+                        if (value >= 10000000) {
+                            return (value / 10000000).toFixed(2) + ' Cr';
+                        } else if (value >= 100000) {
+                            return (value / 100000).toFixed(2) + ' L';
+                        } else {
+                            return value + ' oi';
+                        }
+                    }
 
                     // -----------------------------------Total Formatted Calls Value In Ajax Function
 
@@ -635,7 +635,7 @@
                     var formattedCallsOpenInterest = formatInterest(totalCallsOpenInterest);
                     var formattedCallsOpenInterestChange = formatInterest(totalCallsOpenInterestChange);
                     var formattedCallsTotalQtyTraded = formatInterest(totalCallsTotalQtyTraded);
-                    
+
 
 
                     var formattedPutsTotalQtyTraded = formatInterest(totalPutsTotalQtyTraded);
@@ -834,17 +834,52 @@
                         totalPutsTotalQtyTraded += item.TOTALQTYTRADED;
                     });
 
+
+
+
+
+
+
+
+
+
+
+                       function formatInterest(value) {
+                        if (value >= 10000000) {
+                            return (value / 10000000).toFixed(2) + ' Cr';
+                        } else if (value >= 100000) {
+                            return (value / 100000).toFixed(2) + ' L';
+                        } else {
+                            return value + ' oi';
+                        }
+                    }
+
+                    // -----------------------------------Total Formatted Calls Value In Ajax Function
+
+
+                    var formattedCallsOpenInterest = formatInterest(totalCallsOpenInterest);
+                    var formattedCallsOpenInterestChange = formatInterest(totalCallsOpenInterestChange);
+                    var formattedCallsTotalQtyTraded = formatInterest(totalCallsTotalQtyTraded);
+
+
+
+                    var formattedPutsTotalQtyTraded = formatInterest(totalPutsTotalQtyTraded);
+                    var formattedPutsOpenInterestChange = formatInterest(totalPutsOpenInterestChange);
+                    var formattedPutsOpenInterest = formatInterest(totalPutsOpenInterest);
+
+
+
                     // Update the total counts for calls and puts in the table
                     let totalCallsHtml = '<tr>';
                     totalCallsHtml += '<td style="color:white">-</td>';
                     totalCallsHtml += '<td style="color:#ffb020">' +
-                        totalCallsOpenInterest +
+                        formattedCallsOpenInterest +
                         ' oi</td>';
                     totalCallsHtml += '<td style="color:#ffb020">' +
-                        totalCallsOpenInterestChange +
+                        formattedCallsOpenInterestChange +
                         ' cioi</td>';
                     totalCallsHtml += '<td style="color:#ffb020">' +
-                        totalCallsTotalQtyTraded +
+                        formattedCallsTotalQtyTraded +
                         ' Traded</td>';
                     totalCallsHtml += '<td style="color:white">-</td>';
                     totalCallsHtml += '<td style="color:white">-</td>';
@@ -856,12 +891,12 @@
                     totalPutsHtml += '<td style="color:white">-</td>';
                     totalPutsHtml += '<td style="color:white">-</td>';
                     totalPutsHtml += '<td style="color:#ffb020">' +
-                        totalPutsTotalQtyTraded +
+                        formattedPutsTotalQtyTraded +
                         ' Traded</td>';
                     totalPutsHtml += '<td style="color:#ffb020">' +
-                        totalPutsOpenInterestChange +
+                        formattedPutsOpenInterestChange +
                         ' cioi</td>';
-                    totalPutsHtml += '<td style="color:#ffb020">' + totalPutsOpenInterest +
+                    totalPutsHtml += '<td style="color:#ffb020">' + formattedPutsOpenInterest +
                         ' oi</td>';
                     totalPutsHtml += '</tr>';
 
