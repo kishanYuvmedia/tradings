@@ -617,35 +617,43 @@
                     let totalCallsHtml = '<tr>';
                     totalCallsHtml += '<td></td>';
 
-                    // ----------------------------------------------------------total value in ajax
+                    // -----------------------------------total value in ajax function
 
-                    //                     function formatInterest(value) {
-                    //     if (value >= 10000000) {
-                    //         return (value / 10000000).toFixed(2) + ' Cr';
-                    //     } else if (value >= 100000) {
-                    //         return (value / 100000).toFixed(2) + ' L';
-                    //     } else {
-                    //         return value + ' oi';
-                    //     }
-                    // }
+                      function formatInterest(value) {
+                      if (value >= 10000000) {
+                          return (value / 10000000).toFixed(2) + ' Cr';
+                      } else if (value >= 100000) {
+                          return (value / 100000).toFixed(2) + ' L';
+                      } else {
+                          return value + ' oi';
+                      }
+                  }
 
-                    // var formattedInterest = formatInterest(totalCallsOpenInterest);
-                    // var formattedInterestChange = formatInterest(totalCallsOpenInterestChange);
+                    // -----------------------------------Total Formatted Calls Value In Ajax Function
 
 
-                    totalCallsHtml += '<td style="color: #ffb020"> ' + totalCallsOpenInterest +
+                    var formattedCallsOpenInterest = formatInterest(totalCallsOpenInterest);
+                    var formattedCallsOpenInterestChange = formatInterest(totalCallsOpenInterestChange);
+                    var formattedCallsTotalQtyTraded = formatInterest(totalCallsTotalQtyTraded);
+                    
+
+
+                    var formattedPutsTotalQtyTraded = formatInterest(totalPutsTotalQtyTraded);
+                    var formattedPutsOpenInterestChange = formatInterest(totalPutsOpenInterestChange);
+                    var formattedPutsOpenInterest = formatInterest(totalPutsOpenInterest);
+
+
+
+                    totalCallsHtml += '<td style="color: #ffb020"> ' + formattedCallsOpenInterest +
                         ' oi</td>';
-
-
-
-
-
                     totalCallsHtml += '<td  style="color: #ffb020">' +
-                        totalCallsOpenInterestChange +
+                        formattedCallsOpenInterestChange +
                         ' cioi</td>';
+
                     totalCallsHtml += '<td  style="color: #ffb020">' +
-                        totalCallsTotalQtyTraded +
+                        formattedCallsTotalQtyTraded +
                         ' Traded</td>';
+
                     totalCallsHtml += '<td style="color:white">-</td>';
                     totalCallsHtml += '<td style="color:white">-</td>';
                     totalCallsHtml += '</tr>';
@@ -657,12 +665,12 @@
                     totalPutsHtml += '<td style="color:white">-</td>';
                     totalPutsHtml += '<td style="color:white">-</td>';
                     totalPutsHtml += '<td style="color: #ffb020">' +
-                        totalPutsTotalQtyTraded +
+                        formattedPutsTotalQtyTraded +
                         ' Traded</td>';
                     totalPutsHtml += '<td style="color: #ffb020">' +
-                        totalPutsOpenInterestChange +
+                        formattedPutsOpenInterestChange +
                         ' cioi</td>';
-                    totalPutsHtml += '<td style="color: #ffb020">' + totalPutsOpenInterest +
+                    totalPutsHtml += '<td style="color: #ffb020">' + formattedPutsOpenInterest +
                         ' oi</td>';
                     totalPutsHtml += '</tr>';
                     // Append the total counts to the table
