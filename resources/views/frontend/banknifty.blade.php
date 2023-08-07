@@ -335,9 +335,9 @@
                                         @if ($totalPutsOpenInterest >= 10000000)
                                             {{ number_format($totalPutsOpenInterest / 10000000, 2) }} Cr [Oi]
                                         @elseif ($totalPutsOpenInterest >= 100000)
-                                            {{ number_format($totalPutsOpenInterest / 100000, 2) }} L  [Oi]
+                                            {{ number_format($totalPutsOpenInterest / 100000, 2) }} L [Oi]
                                         @else
-                                            {{ $totalPutsOpenInterest }}  [Oi]
+                                            {{ $totalPutsOpenInterest }} [Oi]
                                         @endif
                                     </b>
                                 </td>
@@ -625,7 +625,7 @@
                         } else if (value >= 100000) {
                             return (value / 100000).toFixed(2) + ' L';
                         } else {
-                            return value + ' oi';
+                            return value + ' ';
                         }
                     }
 
@@ -681,7 +681,7 @@
                     // Calculate PCR and PCR strength
                     let PCRData = calculatePCRStrength2(totalCallsOpenInterest,
                         totalPutsOpenInterest);
-                     var PCR = PCRData['PCR'].toFixed(2);
+                    var PCR = PCRData['PCR'].toFixed(2);
                     let PCRStrength = PCRData['PCRStrength'];
 
                     // Update the PCR value in the table and hide the old PCR value
@@ -793,7 +793,7 @@
 
                     let PCRData = calculatePCRStrength2(totalCallsOpenInterest1,
                         totalPutsOpenInterest1);
-                  var PCR = PCRData['PCR'].toFixed(2);
+                    var PCR = PCRData['PCR'].toFixed(2);
                     let PCRStrength = PCRData['PCRStrength'];
 
 
@@ -844,13 +844,13 @@
 
 
 
-                       function formatInterest(value) {
+                    function formatInterest(value) {
                         if (value >= 10000000) {
                             return (value / 10000000).toFixed(2) + ' Cr';
                         } else if (value >= 100000) {
                             return (value / 100000).toFixed(2) + ' L';
                         } else {
-                            return value + ' oi';
+                            return value + ' ';
                         }
                     }
 

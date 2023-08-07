@@ -83,6 +83,27 @@
                     <a href="#" style="
                     color: white;">
                         <i class="metismenu-icon pe-7s-menu"></i>
+                        MustWatch
+                        <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                    </a>
+                    <ul>
+                        <li class="treeview">
+                            <a href="{{ URL::to('fnoRanking') }}">
+                                <i class="metismenu-icon"></i><span>FNO Ranking</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+
+
+
+
+
+                {{-- <li>
+
+                    <a href="#" style="color: white;">
+                        <i class="metismenu-icon pe-7s-menu"></i>
                         Indices Sectoral
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
                     </a>
@@ -114,13 +135,7 @@
                             </a>
                         </li>
                     </ul>
-                </li>
-
-
-
-
-
-
+                </li> --}}
 
             </ul>
         </div>

@@ -532,4 +532,27 @@ class HomeController extends Controller
             error_log($e->getMessage());
         }
     }
+    public function FnoRanking()
+    {
+        // Replace with your API URL
+        $apiUrl = 'http://nimblerest.lisuns.com:4531/GetProducts?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO';
+        
+        // Initialize Guzzle client
+        $client = new Client();
+
+        try {
+            // Make API request
+            $response = $client->get($apiUrl);
+
+            // Decode the JSON response
+            $data = json_decode($response->getBody(), true);
+
+            // Pass the PRODUCTS array to the view
+            return view('frontend.fnoRanking', ['products' => $data['PRODUCTS']]);
+        } catch (\Exception $e) {
+            // Handle any exceptions here (e.g., API error, connection error)
+            return view('frontend.fnoRanking', ['products' => []]);
+        }
+    }
+
 }

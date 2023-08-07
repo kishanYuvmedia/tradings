@@ -7,6 +7,8 @@ Route::get('/finnifty', 'HomeController@FinNifty');
 Route::get('/optionChain', 'HomeController@OptionChain');
 Route::get('/niftItSectoral', 'HomeController@NiftItSectoral');
 Route::get('/viewNews/{blog}', 'HomeController@viewNews');
+Route::get('/fnoRanking', 'HomeController@FnoRanking');
+
 
 
 Route::get('/get-finniftywithDt/{id}', 'HomeController@getFinNiftywithDt');
