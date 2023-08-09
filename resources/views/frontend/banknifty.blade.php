@@ -177,8 +177,40 @@
                                 <td>
                                     {{ $value['TOTALQTYTRADED'] == 0 ? '-' : $value['TOTALQTYTRADED'] }}
                                 </td>
-                                <td> {{ $value['PRICECHANGEPERCENTAGE'] == 0 ? '-' : $value['PRICECHANGEPERCENTAGE'] }}
+
+
+
+
+                                {{-- Get percentageChangeOI --}}
+
+                                <td>
+                                    @php
+                                        $new_OI = $value['OPENINTEREST'];
+                                        $change_in_OI = $value['OPENINTERESTCHANGE'];
+                                        $old_OI = $new_OI - $change_in_OI;
+                                        
+                                        if ($old_OI == 0) {
+                                            $percentageChangeOI = 0; // Avoid division by zero
+                                        } else {
+                                            $percentageChangeOI = ($change_in_OI / $old_OI) * 100;
+                                        }
+                                        
+                                        $roundedPercentage = ceil($percentageChangeOI);
+                                    @endphp
+
+                                    @if ($roundedPercentage == 0)
+                                        -
+                                    @else
+                                        {{ $roundedPercentage }}%
+                                    @endif
                                 </td>
+
+
+
+
+
+
+
                                 <td>{{ $value['LASTTRADEPRICE'] == 0 ? '-' : $value['LASTTRADEPRICE'] }}
                                 </td>
 
@@ -281,9 +313,45 @@
                                 <td>
                                     {{ $value['LASTTRADEPRICE'] == 0 ? '-' : $value['LASTTRADEPRICE'] }}
                                 </td>
+
+
+
+
+
+                                {{-- Get percentageChangeOI --}}
+
+
+
+
+
+
+
                                 <td>
-                                    {{ $value['PRICECHANGEPERCENTAGE'] == 0 ? '-' : $value['PRICECHANGEPERCENTAGE'] }}
+                                    @php
+                                        $new_OI = $value['OPENINTEREST'];
+                                        $change_in_OI = $value['OPENINTERESTCHANGE'];
+                                        $old_OI = $new_OI - $change_in_OI;
+                                        
+                                        if ($old_OI == 0) {
+                                            $percentageChangeOI = 0; // Avoid division by zero
+                                        } else {
+                                            $percentageChangeOI = ($change_in_OI / $old_OI) * 100;
+                                        }
+                                        
+                                        $roundedPercentage = ceil($percentageChangeOI);
+                                    @endphp
+
+                                    @if ($roundedPercentage == 0)
+                                        -
+                                    @else
+                                        {{ $roundedPercentage }}%
+                                    @endif
                                 </td>
+
+
+
+
+
                                 <td>
                                     {{ $value['TOTALQTYTRADED'] == 0 ? '-' : $value['TOTALQTYTRADED'] }}
                                 </td>
