@@ -5,9 +5,6 @@
         use Carbon\Carbon;
     @endphp
 
-
-
-
     {{-- -----------------------------------------------------------------------------------------------------Expiry Date Function  --}}
 
     <div class="app-page-title">
@@ -37,14 +34,7 @@
         </div>
     </div>
 
-
-
-
-
     {{-- -----------------------------------------------------------------------------------------------------Strike Range Function  --}}
-
-
-
 
 
     <div class="d-flex">
@@ -85,9 +75,6 @@
             </div>
         </div>
     </div>
-
-
-
 
 
 
@@ -194,9 +181,7 @@
                         </tbody>
                     </table>
 
-
                     {{-- --------------------------------------------------------------------------------------------------------------------------------Puts Table Function  --}}
-
 
                     <table class="nifty-table-put">
                         <!-- Put options table -->
@@ -330,14 +315,8 @@
                 
                 ?>
 
-
-
                 <!-- -------------------------------------------------------------------------------------------------------------Display the data in another table -->
-
-
                 <!-- Send Both Velue On Top For Display PCR Data -->
-
-
 
                 <!-- Container to display updated data for calls -->
                 <div id="updated_call_container"></div>
@@ -345,14 +324,9 @@
                 <div id="updated_put_container"></div>
                 <!-- Container to display updated PCR and PCR strength -->
 
-
-
-
             </div>
         </div>
     </div>
-
-
 
     {{-- ------------------------------------------------------------------------------------------------------------------------------------------------Expiry Date Function & Strike Price Function --}}
 
@@ -384,7 +358,6 @@
                 });
 
 
-
                 // If the currently selected value in the ending strike price dropdown is less than or equal to the selected value in the starting strike price dropdown, change the selected value to the first greater option
                 const selectedEndingStrikePrice = parseFloat($("#ending").val());
                 if (selectedEndingStrikePrice < selectedStartingStrikePrice) {
@@ -401,7 +374,6 @@
             });
 
         });
-
 
 
 
@@ -443,7 +415,6 @@
                 };
             };
         }
-
 
 
         $("#expiry_date").change(function() {
@@ -504,46 +475,41 @@
                     // End of the loop
                     updatedHtml1 += '</table></div>';
 
-                    $('#starting').html(strikeRange);
-                    $('#ending').html(strikeRange);
-                    updatedHtml1 += '</table></div>';
+                    $('#starting, #ending').html(strikeRange);
                     $("#updated_put_container").html(updatedHtml1);
                     $(".putCurrentData").hide();
 
-                    // Calculate PCR and PCR strength
                     let totalCallsOpenInterest = 0;
-                    let totalPutsOpenInterest = 0;
                     let totalCallsOpenInterestChange = 0;
                     let totalCallsTotalQtyTraded = 0;
-                    response.callArr.forEach(function(item) {
+
+                    response.callArr.forEach(item => {
                         totalCallsOpenInterest += item.OPENINTEREST;
                         totalCallsOpenInterestChange += item.OPENINTERESTCHANGE;
                         totalCallsTotalQtyTraded += item.TOTALQTYTRADED;
                     });
 
-
+                    let totalPutsOpenInterest = 0;
                     let totalPutsOpenInterestChange = 0;
                     let totalPutsTotalQtyTraded = 0;
 
-                    response.putArr.forEach(function(item) {
+                    response.putArr.forEach(item => {
                         totalPutsOpenInterest += item.OPENINTEREST;
                         totalPutsOpenInterestChange += item.OPENINTERESTCHANGE;
                         totalPutsTotalQtyTraded += item.TOTALQTYTRADED;
                     });
+
                     let totalCallsHtml = '<tr>';
                     totalCallsHtml += '<td></td>';
 
                     // -----------------------------------total value in ajax function
 
                     function formatInterest(value) {
-                        if (value >= 10000000) {
-                            return (value / 10000000).toFixed(2) + ' Cr';
-                        } else if (value >= 100000) {
-                            return (value / 100000).toFixed(2) + ' L';
-                        } else {
-                            return value + ' ';
-                        }
+                        if (value >= 10000000) return (value / 10000000).toFixed(2) + ' Cr';
+                        if (value >= 100000) return (value / 100000).toFixed(2) + ' L';
+                        return value + ' ';
                     }
+
 
                     // -----------------------------------Total Formatted Calls Value In Ajax Function
 
@@ -552,43 +518,34 @@
                     var formattedCallsOpenInterestChange = formatInterest(totalCallsOpenInterestChange);
                     var formattedCallsTotalQtyTraded = formatInterest(totalCallsTotalQtyTraded);
 
-
-
                     var formattedPutsTotalQtyTraded = formatInterest(totalPutsTotalQtyTraded);
                     var formattedPutsOpenInterestChange = formatInterest(totalPutsOpenInterestChange);
                     var formattedPutsOpenInterest = formatInterest(totalPutsOpenInterest);
 
 
 
-                    totalCallsHtml += '<td style="color: #ffb020"> ' + formattedCallsOpenInterest +
-                        ' oi</td>';
-                    totalCallsHtml += '<td  style="color: #ffb020">' +
-                        formattedCallsOpenInterestChange +
-                        ' cioi</td>';
+                    totalCallsHtml +=
+                        `<td style="color: #ffb020">${formattedCallsOpenInterest} oi</td>`;
+                    totalCallsHtml +=
+                        `<td style="color: #ffb020">${formattedCallsOpenInterestChange} cioi</td>`;
+                    totalCallsHtml +=
+                        `<td style="color: #ffb020">${formattedCallsTotalQtyTraded} Traded</td>`;
+                    totalCallsHtml +=
+                        `<td style="color:white">-</td><td style="color:white">-</td></tr>`;
 
-                    totalCallsHtml += '<td  style="color: #ffb020">' +
-                        formattedCallsTotalQtyTraded +
-                        ' Traded</td>';
+                    let totalPutsHtml = `
+                    <tr>
+                        <td style="background-color:#ffb020;color: #000000;">-: Total :-</td>
+                        <td style="color:white">-</td>
+                        <td style="color:white">-</td>
+                        <td style="color: #ffb020">${formattedPutsTotalQtyTraded} Traded</td>
+                        <td style="color: #ffb020">${formattedPutsOpenInterestChange} cioi</td>
+                        <td style="color: #ffb020">${formattedPutsOpenInterest} oi</td>
+                    </tr>`;
 
-                    totalCallsHtml += '<td style="color:white">-</td>';
-                    totalCallsHtml += '<td style="color:white">-</td>';
-                    totalCallsHtml += '</tr>';
 
 
-                    let totalPutsHtml = '<tr>';
-                    totalPutsHtml +=
-                        '<td style="background-color:#ffb020;;color: #000000;">-: Total :-</td>';
-                    totalPutsHtml += '<td style="color:white">-</td>';
-                    totalPutsHtml += '<td style="color:white">-</td>';
-                    totalPutsHtml += '<td style="color: #ffb020">' +
-                        formattedPutsTotalQtyTraded +
-                        ' Traded</td>';
-                    totalPutsHtml += '<td style="color: #ffb020">' +
-                        formattedPutsOpenInterestChange +
-                        ' cioi</td>';
-                    totalPutsHtml += '<td style="color: #ffb020">' + formattedPutsOpenInterest +
-                        ' oi</td>';
-                    totalPutsHtml += '</tr>';
+
                     // Append the total counts to the table
                     $("#updated_call_container").append(totalCallsHtml);
                     $("#updated_put_container").append(totalPutsHtml);
@@ -636,38 +593,25 @@
                 },
                 success: function(response) {
                     let updatedHtml = '<div class="d-flex "><table>';
-
                     let totalCallsOpenInterest1 = 0;
                     let totalPutsOpenInterest1 = 0;
 
                     response.callArr.forEach(function(item, key) {
                         totalCallsOpenInterest1 += item.OPENINTEREST;
-                        updatedHtml += '<tr>';
-                        updatedHtml += '<td style="color:white">' + parseInt(key +
-                            1) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item
-                            .OPENINTEREST == 0 ?
-                            '-' : item.OPENINTEREST) + '</td>';
-                        updatedHtml += '<td style="color: ' + (item
-                            .OPENINTERESTCHANGE < 0 ?
-                            '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ?
-                                '#0edb67' : 'white')
-                        ) + '">';
-                        updatedHtml += (item.OPENINTERESTCHANGE == 0 ? '-' : item
-                            .OPENINTERESTCHANGE);
-                        updatedHtml += '</td>';
-                        updatedHtml += '<td style="color:white">' + (item
-                            .TOTALQTYTRADED == 0 ?
-                            '-' : item.TOTALQTYTRADED) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item
-                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item
-                            .PRICECHANGEPERCENTAGE
-                        ) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item
-                            .LASTTRADEPRICE == 0 ?
-                            '-' : item.LASTTRADEPRICE) + '</td>';
-                        updatedHtml += '</tr>';
+                        updatedHtml += `<tr>
+                                            <td style="color:white">${parseInt(key + 1)}</td>
+                                            <td style="color:white">${item.OPENINTEREST == 0 ? '-' : item.OPENINTEREST}</td>
+                                            <td style="color: ${item.OPENINTERESTCHANGE < 0 ? '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')}">
+                                                ${item.OPENINTERESTCHANGE == 0 ? '-' : item.OPENINTERESTCHANGE}
+                                            </td>
+                                            <td style="color:white">${item.TOTALQTYTRADED == 0 ? '-' : item.TOTALQTYTRADED}</td>
+                                            <td style="color:white">${item.PRICECHANGEPERCENTAGE == 0 ? '-' : item.PRICECHANGEPERCENTAGE}</td>
+                                            <td style="color:white">${item.LASTTRADEPRICE == 0 ? '-' : item.LASTTRADEPRICE}</td>
+                                        </tr>`;
                     });
+
+                    // ... (rest of the code)
+
                     updatedHtml += '</table></div>';
                     $("#updated_call_container").html(updatedHtml);
                     $(".callCurrentData").hide();
@@ -750,16 +694,6 @@
                         totalPutsTotalQtyTraded += item.TOTALQTYTRADED;
                     });
 
-
-
-
-
-
-
-
-
-
-
                     function formatInterest(value) {
                         if (value >= 10000000) {
                             return (value / 10000000).toFixed(2) + ' Cr';
@@ -778,7 +712,6 @@
                     var formattedCallsTotalQtyTraded = formatInterest(totalCallsTotalQtyTraded);
 
 
-
                     var formattedPutsTotalQtyTraded = formatInterest(totalPutsTotalQtyTraded);
                     var formattedPutsOpenInterestChange = formatInterest(totalPutsOpenInterestChange);
                     var formattedPutsOpenInterest = formatInterest(totalPutsOpenInterest);
@@ -786,35 +719,24 @@
 
 
                     // Update the total counts for calls and puts in the table
-                    let totalCallsHtml = '<tr>';
-                    totalCallsHtml += '<td style="color:white">-</td>';
-                    totalCallsHtml += '<td style="color:#ffb020">' +
-                        formattedCallsOpenInterest +
-                        ' oi</td>';
-                    totalCallsHtml += '<td style="color:#ffb020">' +
-                        formattedCallsOpenInterestChange +
-                        ' cioi</td>';
-                    totalCallsHtml += '<td style="color:#ffb020">' +
-                        formattedCallsTotalQtyTraded +
-                        ' Traded</td>';
-                    totalCallsHtml += '<td style="color:white">-</td>';
-                    totalCallsHtml += '<td style="color:white">-</td>';
-                    totalCallsHtml += '</tr>';
 
-                    let totalPutsHtml = '<tr>';
-                    totalPutsHtml +=
-                        '<td style="background-color:#ffb020;;color: #000000;">-: Total :-</td>';
-                    totalPutsHtml += '<td style="color:white">-</td>';
-                    totalPutsHtml += '<td style="color:white">-</td>';
-                    totalPutsHtml += '<td style="color:#ffb020">' +
-                        formattedPutsTotalQtyTraded +
-                        ' Traded</td>';
-                    totalPutsHtml += '<td style="color:#ffb020">' +
-                        formattedPutsOpenInterestChange +
-                        ' cioi</td>';
-                    totalPutsHtml += '<td style="color:#ffb020">' + formattedPutsOpenInterest +
-                        ' oi</td>';
-                    totalPutsHtml += '</tr>';
+                    let totalCallsHtml = `<tr>
+                        <td style="color:white">-</td>
+                        <td style="color:#ffb020">${formattedCallsOpenInterest} oi</td>
+                        <td style="color:#ffb020">${formattedCallsOpenInterestChange} cioi</td>
+                        <td style="color:#ffb020">${formattedCallsTotalQtyTraded} Traded</td>
+                        <td style="color:white">-</td>
+                        <td style="color:white">-</td>
+                    </tr>`;
+
+                    let totalPutsHtml = `<tr>
+                        <td style="background-color:#ffb020;color: #000000;">-: Total :-</td>
+                        <td style="color:white">-</td>
+                        <td style="color:white">-</td>
+                        <td style="color:#ffb020">${formattedPutsTotalQtyTraded} Traded</td>
+                        <td style="color:#ffb020">${formattedPutsOpenInterestChange} cioi</td>
+                        <td style="color:#ffb020">${formattedPutsOpenInterest} oi</td>
+                    </tr>`;
 
                     // Append the total counts to the table
                     $("#updated_call_container").append(totalCallsHtml);
@@ -822,15 +744,7 @@
 
                     console.log(response);
 
-
                     //---------------------------------------------------------------------------END---------------------------------------------
-
-
-
-
-
-
-
 
                 },
                 error: function(error) {
