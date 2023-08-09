@@ -30,7 +30,12 @@ class HomeController extends Controller
         $expApiResult = curl_exec($curlExp);
         curl_close($curlExp);
         $expApiResult = json_decode($expApiResult, true);
-        $expDt = $expApiResult['EXPIRYDATES'];
+
+        //  old Code
+        // $expDt = $expApiResult['EXPIRYDATES'];
+
+        //  New Code
+        $expDt = isset($expApiResult['EXPIRYDATES']) ? $expApiResult['EXPIRYDATES'] : [];
 
         $initialDateSet = false; // Variable to track if initial date is set
         $expAray = [];
@@ -126,7 +131,12 @@ class HomeController extends Controller
         $expApiResult = curl_exec($curlExp);
         curl_close($curlExp);
         $expApiResult = json_decode($expApiResult, true);
-        $expDt = $expApiResult['EXPIRYDATES'];
+
+        //  old Code
+        // $expDt = $expApiResult['EXPIRYDATES'];
+
+        //  New Code
+        $expDt = isset($expApiResult['EXPIRYDATES']) ? $expApiResult['EXPIRYDATES'] : [];
 
         $initialDateSet = false; // Variable to track if initial date is set
         $expAray = [];
@@ -222,7 +232,11 @@ class HomeController extends Controller
         $expApiResult = curl_exec($curlExp);
         curl_close($curlExp);
         $expApiResult = json_decode($expApiResult, true);
-        $expDt = $expApiResult['EXPIRYDATES'];
+        //  old Code
+        // $expDt = $expApiResult['EXPIRYDATES'];
+
+        //  New Code
+        $expDt = isset($expApiResult['EXPIRYDATES']) ? $expApiResult['EXPIRYDATES'] : [];
 
         $initialDateSet = false; // Variable to track if initial date is set
         $expAray = [];
@@ -536,7 +550,7 @@ class HomeController extends Controller
     {
         // Replace with your API URL
         $apiUrl = 'http://nimblerest.lisuns.com:4531/GetProducts?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO';
-        
+
         // Initialize Guzzle client
         $client = new Client();
 
@@ -554,5 +568,4 @@ class HomeController extends Controller
             return view('frontend.fnoRanking', ['products' => []]);
         }
     }
-
 }

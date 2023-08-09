@@ -28,15 +28,15 @@
         <table>
             <thead>
                 <tr>
-                    <th style="color:white"><b>Sr. No.</b></th>
-                    <th style="color:white">Products</th>
+                    <th style="color:white;text-align: center;"><b>Sr. No.</b></th>
+                    <th style="color:white;text-align: center;" >~ Products ~</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($products as $index => $product)
                     <tr>
-                        <td>{{ $index + 1 }}</td>
-                        <td style="color:white">{{ $product }}</td>
+                        <td style="color:white;text-align: center;">{{ $index + 1 }}</td>
+                        <td style="color:white;text-align: center;">{{ $product }}</td>
                     </tr>
                 @endforeach
             </tbody>
