@@ -12,40 +12,31 @@
 
     <div class="app-page-title">
         <div class="page-title-wrapper">
-            <div class="page-title-heading">
-                <div class="page-title-icon">
-                    <i class="pe-7s-graph1"> </i>
-                </div>
-
-                <div style="display: flex">
-                    <div class="col-md-11 col-sm-1" style="color:white;margin-top:16px">BankNifty- Option Chain</div>
-                    <div class="col-md-1 col-sm-1">
-                        <div class="main-card mb-3 card">
-                            <div class="card-body" style="width: 915px;">
-                                <div class="table-responsive">
-                                    <label for="expiry_date" class="lable-expiry-date"><b>Select Expiry:</b></label>
-                                    <select style="width: 234px; height: 37px; color: #a37213;background-color:#121419"
-                                        id="expiry_date">
-                                        <option value="" selected>Options</option>
-                                        @if (isset($expAray) && is_array($expAray) && count($expAray) > 0)
-                                            @foreach ($expAray as $index => $option)
-                                                <option value="{{ $option['option'] }}"
-                                                    @if ($option['isUpcomingAfterInitial']) selected @endif>
-                                                    {{ $option['option'] }}
-                                                </option>
-                                            @endforeach
-                                        @endif
-                                    </select>
-                                </div>
-
+            <div class="page-title-heading" style="display: flex">
+                <div class="col-md-11 col-sm-1" style="color:white;margin-top:16px">BankNifty- Option Chain</div>
+                <div class="col-md-1 col-sm-1">
+                    <div class="main-card mb-3 card" style="width: 915px;">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <label for="expiry_date" class="lable-expiry-date"><b>Select Expiry:</b></label>
+                                <select style="width: 234px; height: 37px; color: #a37213;background-color:#121419"
+                                    id="expiry_date">
+                                    <option value="" selected>Options</option>
+                                    @foreach ($expAray as $option)
+                                        <option value="{{ $option['option'] }}"
+                                            {{ $option['isUpcomingAfterInitial'] ? 'selected' : '' }}>
+                                            {{ $option['option'] }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
+
 
 
 
@@ -57,37 +48,30 @@
 
 
     <div class="d-flex">
-
-        <div class="row ">
-
+        <div class="row">
             <div class="col-md-12 col-sm-12">
                 <div class="main-card mb-3 card">
                     <div class="card-body d-flex" style="width: 915px;">
                         <!-- Dropdown for starting strike price -->
                         <div class="table-responsive">
-                            <label for="expiry_date">
+                            <label for="starting">
                                 <b style="color: #6c7687"> <span style="color:green">START </span>STRIKE PRICE :</b>
                             </label>
                             <select style="width: 234px; height: 37px; color: #a37213;background-color:#121419"
                                 id="starting">
-                                <!-- Populate options from $putArr -->
-                                @foreach ($putArr as $key => $value)
+                                @foreach ($putArr as $value)
                                     <option value="{{ $value['value'] }}">{{ $value['value'] }}</option>
                                 @endforeach
-
-
                             </select>
                         </div>
                         <!-- Dropdown for ending strike price -->
                         <div class="table-responsive">
-                            <label for="expiry_date"></label>
-                            <b style="color: #6c7687"><span style="color:red">END </span> STRIKEPRICE :</b>
+                            <label for="ending">
+                                <b style="color: #6c7687"><span style="color:red">END </span> STRIKEPRICE :</b>
                             </label>
-
                             <select style="width: 234px; height: 37px; color: #a37213;background-color:#121419"
                                 id="ending">
-                                <!-- Populate options from $putArr -->
-                                @foreach ($putArr as $key => $value)
+                                @foreach ($putArr as $value)
                                     <option value="{{ $value['value'] }}">{{ $value['value'] }}</option>
                                 @endforeach
                             </select>
@@ -95,21 +79,13 @@
                         <!-- Button to trigger the result -->
                         <button type="button" id="result" class="button-29">Result</button>
                     </div>
-
-
-                    {{-- This is a dynamic PCR  row in bankNifty For View On Top  The Value Get by calculatePCRStrength1 --}}
+                    <!-- Dynamic PCR row -->
                     <div id="updated_pcr_container"></div>
-
-
                 </div>
             </div>
-
         </div>
-
-
-
-
     </div>
+
 
 
 
@@ -165,54 +141,27 @@
 
                             <tr>
                                 <td>{{ $key + 1 }}</td>
-                                <td>
-                                    {{ $value['OPENINTEREST'] == 0 ? '-' : $value['OPENINTEREST'] }}
-                                </td>
+                                <td>{{ $value['OPENINTEREST'] ?: '-' }}</td>
                                 <td
                                     style="color: {{ $value['OPENINTERESTCHANGE'] < 0 ? '#ff4c4c' : ($value['OPENINTERESTCHANGE'] > 0 ? '#0edb67' : 'white') }}">
                                     {{ $value['OPENINTERESTCHANGE'] == 0 ? '-' : $value['OPENINTERESTCHANGE'] }}
                                 </td>
-
-
-                                <td>
-                                    {{ $value['TOTALQTYTRADED'] == 0 ? '-' : $value['TOTALQTYTRADED'] }}
-                                </td>
-
-
+                                <td>{{ $value['TOTALQTYTRADED'] ?: '-' }}</td>
 
 
                                 {{-- Get percentageChangeOI --}}
+
 
                                 <td>
                                     @php
                                         $new_OI = $value['OPENINTEREST'];
                                         $change_in_OI = $value['OPENINTERESTCHANGE'];
                                         $old_OI = $new_OI - $change_in_OI;
-                                        
-                                        if ($old_OI == 0) {
-                                            $percentageChangeOI = 0; // Avoid division by zero
-                                        } else {
-                                            $percentageChangeOI = ($change_in_OI / $old_OI) * 100;
-                                        }
-                                        
-                                        $roundedPercentage = ceil($percentageChangeOI);
+                                        $roundedPercentage = $old_OI == 0 ? 0 : ceil(($change_in_OI / $old_OI) * 100);
                                     @endphp
-
-                                    @if ($roundedPercentage == 0)
-                                        -
-                                    @else
-                                        {{ $roundedPercentage }}%
-                                    @endif
+                                    {{ $roundedPercentage == 0 ? '-' : $roundedPercentage . '%' }}
                                 </td>
-
-
-
-
-
-
-
-                                <td>{{ $value['LASTTRADEPRICE'] == 0 ? '-' : $value['LASTTRADEPRICE'] }}
-                                </td>
+                                <td>{{ $value['LASTTRADEPRICE'] == 0 ? '-' : $value['LASTTRADEPRICE'] }}</td>
 
                             </tr>
                             <?php } ?>
@@ -220,41 +169,24 @@
 
                             <tr>
                                 <td style="background-color: #121419;">-</td>
-                                <td style="color: #ffb020">
-                                    <b>
-                                        @if ($totalCallsOpenInterest >= 10000000)
-                                            {{ number_format($totalCallsOpenInterest / 10000000, 2) }} Cr [OI]
-                                        @elseif ($totalCallsOpenInterest >= 100000)
-                                            {{ number_format($totalCallsOpenInterest / 100000, 2) }} L [OI]
-                                        @else
-                                            {{ $totalCallsOpenInterest }} [OI]
-                                        @endif
-                                    </b>
-                                </td>
-                                <td style="color: #ffb020">
-                                    <b>
-                                        @if ($totalCallsOpenInterestChange >= 10000000)
-                                            {{ number_format($totalCallsOpenInterestChange / 10000000, 2) }} Cr [CIOI]
-                                        @elseif ($totalCallsOpenInterestChange >= 100000)
-                                            {{ number_format($totalCallsOpenInterestChange / 100000, 2) }} L [CIOI]
-                                        @else
-                                            {{ $totalCallsOpenInterestChange }} [CIOI]
-                                        @endif
+                                @php
+                                    $dataSets = [[$totalCallsOpenInterest, $totalCallsOpenInterestChange, $totalCallsTotalQtyTraded, 'OI'], [$totalCallsOpenInterestChange, $totalCallsOpenInterestChange, $totalCallsTotalQtyTraded, 'CIOI'], [$totalCallsTotalQtyTraded, $totalCallsOpenInterestChange, $totalCallsTotalQtyTraded, 'Traded']];
+                                @endphp
 
+                                @foreach ($dataSets as [$value, $change, $qtyTraded, $label])
+                                    <td style="color: #ffb020">
+                                        <b>
+                                            @if ($value >= 10000000)
+                                                {{ number_format($value / 10000000, 2) }} Cr [{{ $label }}]
+                                            @elseif ($value >= 100000)
+                                                {{ number_format($value / 100000, 2) }} L [{{ $label }}]
+                                            @else
+                                                {{ $value }} [{{ $label }}]
+                                            @endif
+                                        </b>
+                                    </td>
+                                @endforeach
 
-                                    </b>
-                                </td>
-                                <td style="color: #ffb020">
-                                    <b>
-                                        @if ($totalCallsTotalQtyTraded >= 10000000)
-                                            {{ number_format($totalCallsTotalQtyTraded / 10000000, 2) }} Cr [Traded]
-                                        @elseif ($totalCallsTotalQtyTraded >= 100000)
-                                            {{ number_format($totalCallsTotalQtyTraded / 100000, 2) }} L [Traded]
-                                        @else
-                                            {{ $totalCallsTotalQtyTraded }} [Traded]
-                                        @endif
-                                    </b>
-                                </td>
                                 <td style="background-color: #121419;">-</td>
                                 <td style="background-color: #121419;">-</td>
                             </tr>
@@ -310,113 +242,59 @@
                             <tr style="color: white">
 
                                 <td style="background-color: #22272f;border-bottom:hidden">{{ $value['value'] }}</td>
-                                <td>
-                                    {{ $value['LASTTRADEPRICE'] == 0 ? '-' : $value['LASTTRADEPRICE'] }}
-                                </td>
 
 
-
-
+                                <td>{{ $value['LASTTRADEPRICE'] ?: '-' }}</td>
 
                                 {{-- Get percentageChangeOI --}}
-
-
-
-
-
-
 
                                 <td>
                                     @php
                                         $new_OI = $value['OPENINTEREST'];
                                         $change_in_OI = $value['OPENINTERESTCHANGE'];
                                         $old_OI = $new_OI - $change_in_OI;
-                                        
-                                        if ($old_OI == 0) {
-                                            $percentageChangeOI = 0; // Avoid division by zero
-                                        } else {
-                                            $percentageChangeOI = ($change_in_OI / $old_OI) * 100;
-                                        }
-                                        
-                                        $roundedPercentage = ceil($percentageChangeOI);
+                                        $roundedPercentage = $old_OI == 0 ? 0 : ceil(($change_in_OI / $old_OI) * 100);
                                     @endphp
-
-                                    @if ($roundedPercentage == 0)
-                                        -
-                                    @else
-                                        {{ $roundedPercentage }}%
-                                    @endif
+                                    {{ $roundedPercentage == 0 ? '-' : $roundedPercentage . '%' }}
                                 </td>
-
-
-
-
-
-                                <td>
-                                    {{ $value['TOTALQTYTRADED'] == 0 ? '-' : $value['TOTALQTYTRADED'] }}
-                                </td>
+                                <td>{{ $value['TOTALQTYTRADED'] ?: '-' }}</td>
                                 <td
                                     style="color: {{ $value['OPENINTERESTCHANGE'] < 0 ? '#ff4c4c' : ($value['OPENINTERESTCHANGE'] > 0 ? '#0edb67' : 'white') }}">
-                                    {{ $value['OPENINTERESTCHANGE'] == 0 ? '-' : $value['OPENINTERESTCHANGE'] }}
+                                    {{ $value['OPENINTERESTCHANGE'] ?: '-' }}
                                 </td>
-                                <td>
-                                    {{ $value['OPENINTEREST'] == 0 ? '-' : $value['OPENINTEREST'] }}
-                                </td>
+                                <td>{{ $value['OPENINTEREST'] ?: '-' }}</td>
+
                             </tr>
                             <?php } ?>
                             <!-- Add a new row to display the total counts for puts -->
                             <tr>
                                 <td style="background-color:#ffb020;;color: #000000;"><b>-: Total :-</b></td>
                                 <td rowspan="2" style="background-color: #121419">-</td>
-
                                 <td style="background-color: #121419">-</td>
 
+                                {{-- CR And L Function  --}}
 
+                                @php
+                                    $dataSets = [[$totalPutsTotalQtyTraded, 'Traded'], [$totalPutsOpenInterestChange, 'CIOI'], [$totalPutsOpenInterest, 'Oi']];
+                                @endphp
 
+                                @foreach ($dataSets as [$value, $label])
+                                    <td style="color: #ffb020">
+                                        <b>
+                                            @if ($value >= 10000000)
+                                                {{ number_format($value / 10000000, 2) }} Cr [{{ $label }}]
+                                            @elseif ($value >= 100000)
+                                                {{ number_format($value / 100000, 2) }} L [{{ $label }}]
+                                            @else
+                                                {{ $value }} [{{ $label }}]
+                                            @endif
+                                        </b>
+                                    </td>
+                                @endforeach
 
-
-
-                                <td style="color: #ffb020">
-                                    <b>
-                                        @if ($totalPutsTotalQtyTraded >= 10000000)
-                                            {{ number_format($totalPutsTotalQtyTraded / 10000000, 2) }} Cr [Traded]
-                                        @elseif ($totalPutsTotalQtyTraded >= 100000)
-                                            {{ number_format($totalPutsTotalQtyTraded / 100000, 2) }} L [Traded]
-                                        @else
-                                            {{ $totalPutsTotalQtyTraded }} [Traded]
-                                        @endif
-
-
-                                    </b>
-                                </td>
-                                <td style="color: #ffb020"><b>
-                                        @if ($totalPutsOpenInterestChange >= 10000000)
-                                            {{ number_format($totalPutsOpenInterestChange / 10000000, 2) }} Cr [CIOI]
-                                        @elseif ($totalPutsOpenInterestChange >= 100000)
-                                            {{ number_format($totalPutsOpenInterestChange / 100000, 2) }} L [CIOI]
-                                        @else
-                                            {{ $totalPutsOpenInterestChange }} [CIOI]
-                                        @endif
-                                </td>
-                                <td style="color: #ffb020">
-                                    <b>
-                                        @if ($totalPutsOpenInterest >= 10000000)
-                                            {{ number_format($totalPutsOpenInterest / 10000000, 2) }} Cr [Oi]
-                                        @elseif ($totalPutsOpenInterest >= 100000)
-                                            {{ number_format($totalPutsOpenInterest / 100000, 2) }} L [Oi]
-                                        @else
-                                            {{ $totalPutsOpenInterest }} [Oi]
-                                        @endif
-                                    </b>
-                                </td>
                             </tr>
                         </tbody>
                     </table>
-
-
-
-
-
 
                 </div>
             @else
@@ -582,37 +460,19 @@
                     // Display data after change Expiry date  
 
                     let updatedHtml = '<div class="d-flex "><table>';
-                    response.callArr.forEach(function(item, key) {
-                        updatedHtml += '<tr>';
-
-                        updatedHtml += '<td style="color:white">' + (key + 1) +
-                            '</td>';
-                        updatedHtml += '<td style="color:white">' + (item
-                            .OPENINTEREST == 0 ?
-                            '-' : item.OPENINTEREST) + '</td>';
-
-                        updatedHtml += '<td style="color: ' + (item
-                            .OPENINTERESTCHANGE < 0 ?
-                            '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ?
-                                '#0edb67' : 'white')
-                        ) + '">';
-                        updatedHtml += (item.OPENINTERESTCHANGE == 0 ? '-' : item
-                            .OPENINTERESTCHANGE);
-                        updatedHtml += '</td>';
-
-                        updatedHtml += '<td style="color:white">' + (item
-                            .TOTALQTYTRADED == 0 ?
-                            '-' : item.TOTALQTYTRADED) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item
-                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item
-                            .PRICECHANGEPERCENTAGE
-                        ) + '</td>';
-                        updatedHtml += '<td style="color:white">' + (item
-                            .LASTTRADEPRICE == 0 ?
-                            '-' : item.LASTTRADEPRICE) + '</td>';
-                        updatedHtml += '</tr>';
+                    response.callArr.forEach((item, key) => {
+                        updatedHtml += `
+                        <tr>
+                            <td style="color:white">${key + 1}</td>
+                            <td style="color:white">${item.OPENINTEREST === 0 ? '-' : item.OPENINTEREST}</td>
+                            <td style="color: ${item.OPENINTERESTCHANGE < 0 ? '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')}">
+                                ${item.OPENINTERESTCHANGE === 0 ? '-' : item.OPENINTERESTCHANGE}
+                            </td>
+                            <td style="color:white">${item.TOTALQTYTRADED === 0 ? '-' : item.TOTALQTYTRADED}</td>
+                            <td style="color:white">${item.PRICECHANGEPERCENTAGE === 0 ? '-' : item.PRICECHANGEPERCENTAGE}</td>
+                            <td style="color:white">${item.LASTTRADEPRICE === 0 ? '-' : item.LASTTRADEPRICE}</td>
+                        </tr>`;
                     });
-
                     updatedHtml += '</table></div>';
 
                     $("#updated_call_container").html(updatedHtml);
@@ -621,41 +481,29 @@
                     let strikeRange = '';
                     let updatedHtml1 = '<div class="d-flex "><table>';
 
-                    response.putArr.forEach(function(item) {
-                        // to get real strikeprice in dropdown  And Display In View File 
-
-                        strikeRange += '<option>' + item.value + '</option>';
+                    response.putArr.forEach(item => {
+                        // to get real strike price in dropdown and display in view file
+                        strikeRange += `<option>${item.value}</option>`;
                         strikePrice.push(item.value);
 
-                        $('#starting').html('<option></option>')
+                        $('#starting').html('<option></option>');
 
-                        updatedHtml1 += '<tr>';
-                        updatedHtml1 +=
-                            '<td style="color:white; background-color: #22272f; border-bottom: hidden;">' +
-                            item.value + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item
-                            .LASTTRADEPRICE == 0 ?
-                            '-' : item.LASTTRADEPRICE) + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item
-                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item
-                            .PRICECHANGEPERCENTAGE
-                        ) + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item
-                            .TOTALQTYTRADED == 0 ?
-                            '-' : item.TOTALQTYTRADED) + '</td>';
-                        updatedHtml1 += '<td style="color: ' + (item
-                            .OPENINTERESTCHANGE < 0 ?
-                            '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ?
-                                '#0edb67' : 'white')
-                        ) + '">';
-                        updatedHtml1 += (item.OPENINTERESTCHANGE == 0 ? '-' : item
-                            .OPENINTERESTCHANGE);
-                        updatedHtml += '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item
-                            .OPENINTEREST == 0 ?
-                            '-' : item.OPENINTEREST) + '</td>';
-                        updatedHtml1 += '</tr>';
+                        updatedHtml1 += `
+                        <tr>
+                            <td style="color:white; background-color: #22272f; border-bottom: hidden;">${item.value}</td>
+                            <td style="color:white">${item.LASTTRADEPRICE === 0 ? '-' : item.LASTTRADEPRICE}</td>
+                            <td style="color:white">${item.PRICECHANGEPERCENTAGE === 0 ? '-' : item.PRICECHANGEPERCENTAGE}</td>
+                            <td style="color:white">${item.TOTALQTYTRADED === 0 ? '-' : item.TOTALQTYTRADED}</td>
+                            <td style="color: ${item.OPENINTERESTCHANGE < 0 ? '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')}">
+                                ${item.OPENINTERESTCHANGE === 0 ? '-' : item.OPENINTERESTCHANGE}
+                            </td>
+                            <td style="color:white">${item.OPENINTEREST === 0 ? '-' : item.OPENINTEREST}</td>
+                        </tr>`;
                     });
+
+                    // End of the loop
+                    updatedHtml1 += '</table></div>';
+
                     $('#starting').html(strikeRange);
                     $('#ending').html(strikeRange);
                     updatedHtml1 += '</table></div>';
