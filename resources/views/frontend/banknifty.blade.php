@@ -234,13 +234,16 @@
                                 {{-- Get percentageChangeOI --}}
 
                                 <td>
+
                                     @php
                                         $new_OI = $value['OPENINTEREST'];
                                         $change_in_OI = $value['OPENINTERESTCHANGE'];
                                         $old_OI = $new_OI - $change_in_OI;
                                         $roundedPercentage = $old_OI == 0 ? 0 : ceil(($change_in_OI / $old_OI) * 100);
                                     @endphp
+
                                     {{ $roundedPercentage == 0 ? '-' : $roundedPercentage . '%' }}
+
                                 </td>
                                 <td>{{ $value['TOTALQTYTRADED'] ?: '-' }}</td>
                                 <td
@@ -443,6 +446,7 @@
                             <td style="color:white">${item.PRICECHANGEPERCENTAGE === 0 ? '-' : item.PRICECHANGEPERCENTAGE}</td>
                             <td style="color:white">${item.LASTTRADEPRICE === 0 ? '-' : item.LASTTRADEPRICE}</td>
                         </tr>`;
+
                     });
                     updatedHtml += '</table></div>';
 
@@ -600,13 +604,11 @@
                         totalCallsOpenInterest1 += item.OPENINTEREST;
                         updatedHtml += `<tr>
                                             <td style="color:white">${parseInt(key + 1)}</td>
-                                            <td style="color:white">${item.OPENINTEREST == 0 ? '-' : item.OPENINTEREST}</td>
-                                            <td style="color: ${item.OPENINTERESTCHANGE < 0 ? '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')}">
-                                                ${item.OPENINTERESTCHANGE == 0 ? '-' : item.OPENINTERESTCHANGE}
-                                            </td>
-                                            <td style="color:white">${item.TOTALQTYTRADED == 0 ? '-' : item.TOTALQTYTRADED}</td>
-                                            <td style="color:white">${item.PRICECHANGEPERCENTAGE == 0 ? '-' : item.PRICECHANGEPERCENTAGE}</td>
-                                            <td style="color:white">${item.LASTTRADEPRICE == 0 ? '-' : item.LASTTRADEPRICE}</td>
+                                            <td style="color:white">${item.OPENINTEREST || '-'}</td>
+                                            <td style="color:  ${item.OPENINTERESTCHANGE < 0 ? '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')}">${item.OPENINTERESTCHANGE || '-'}</td>
+                                            <td style="color:white">${item.TOTALQTYTRADED || '-'}</td>
+                                            <td style="color:white">${item.PRICECHANGEPERCENTAGE || '-'}</td>
+                                            <td style="color:white">${item.LASTTRADEPRICE || '-'}</td>
                                         </tr>`;
                     });
 
@@ -620,34 +622,27 @@
                     response.putArr.forEach(function(item) {
                         totalPutsOpenInterest1 += item.OPENINTEREST;
 
+                        // updatedHtml1 += '<tr>';
+                        // updatedHtml1 +=   '<td  style="color:white; background-color: #22272f; border-bottom: hidden;" >' + item.value + '</td>';
+                        // updatedHtml1 += '<td style="color:white">' + (item .LASTTRADEPRICE == 0 ? '-' : item.LASTTRADEPRICE) + '</td>';
+                        // updatedHtml1 += '<td style="color:white">' + (item .PRICECHANGEPERCENTAGE == 0 ? '-' : item .PRICECHANGEPERCENTAGE ) + '</td>';
+                        // updatedHtml1 += '<td style="color:white">' + (item  .TOTALQTYTRADED == 0 ?  '-' : item.TOTALQTYTRADED) + '</td>';
+                        // updatedHtml1 += '<td style="color: ' + (item  .OPENINTERESTCHANGE < 0 ? '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ?  '#0edb67' : 'white')) + '">';
+                        // updatedHtml1 += (item.OPENINTERESTCHANGE == 0 ? '-' : item .OPENINTERESTCHANGE);
+                        // updatedHtml += '</td>';
+                        // updatedHtml1 += '<td style="color:white">' + (item  .OPENINTEREST == 0 ? '-' : item.OPENINTEREST) + '</td>';
+                        // updatedHtml1 += '</tr>';
 
 
-                        updatedHtml1 += '<tr>';
-                        updatedHtml1 +=
-                            '<td  style="color:white; background-color: #22272f; border-bottom: hidden;" >' +
-                            item.value + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item
-                            .LASTTRADEPRICE == 0 ?
-                            '-' : item.LASTTRADEPRICE) + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item
-                            .PRICECHANGEPERCENTAGE == 0 ? '-' : item
-                            .PRICECHANGEPERCENTAGE
-                        ) + '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item
-                            .TOTALQTYTRADED == 0 ?
-                            '-' : item.TOTALQTYTRADED) + '</td>';
-                        updatedHtml1 += '<td style="color: ' + (item
-                            .OPENINTERESTCHANGE < 0 ?
-                            '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ?
-                                '#0edb67' : 'white')
-                        ) + '">';
-                        updatedHtml1 += (item.OPENINTERESTCHANGE == 0 ? '-' : item
-                            .OPENINTERESTCHANGE);
-                        updatedHtml += '</td>';
-                        updatedHtml1 += '<td style="color:white">' + (item
-                            .OPENINTEREST == 0 ?
-                            '-' : item.OPENINTEREST) + '</td>';
-                        updatedHtml1 += '</tr>';
+                        updatedHtml1 += `<tr>
+                                            <td style="color:white; background-color: #22272f; border-bottom: hidden;">${item.value}</td>
+                                            <td style="color:white">${item.LASTTRADEPRICE || '-'}</td>
+                                            <td style="color:white">${item.PRICECHANGEPERCENTAGE || '-'}</td>
+                                            <td style="color:white">${item.TOTALQTYTRADED || '-'}</td>
+                                            <td style="color: ${item.OPENINTERESTCHANGE < 0 ? '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')}">${item.OPENINTERESTCHANGE || '-'}</td>
+                                            <td style="color:white">${item.OPENINTEREST || '-'}</td>
+                                        </tr>`;
+
                     });
 
 
