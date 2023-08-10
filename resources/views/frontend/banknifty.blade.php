@@ -432,7 +432,7 @@
                 success: function(response) {
 
                     // Display data after change Expiry date  
-
+                    // Included  PRICECHANGEPERCENTAGE% (old_OI) In => callArr
                     let updatedHtml = '<div class="d-flex "><table>';
                     response.callArr.forEach((item, key) => {
                         updatedHtml += `
@@ -443,7 +443,17 @@
                                 ${item.OPENINTERESTCHANGE === 0 ? '-' : item.OPENINTERESTCHANGE}
                             </td>
                             <td style="color:white">${item.TOTALQTYTRADED === 0 ? '-' : item.TOTALQTYTRADED}</td>
-                            <td style="color:white">${item.PRICECHANGEPERCENTAGE === 0 ? '-' : item.PRICECHANGEPERCENTAGE}</td>
+                            <td style="color:white">
+                                    ${
+                                        (() => {
+                                            const new_OI = item.OPENINTEREST;
+                                            const change_in_OI = item.OPENINTERESTCHANGE;
+                                            const old_OI = new_OI - change_in_OI;
+                                            const roundedPercentage = old_OI === 0 ? 0 : Math.ceil((change_in_OI / old_OI) * 100);
+                                            return roundedPercentage === 0 ? '-' : roundedPercentage + '%';
+                                        })()
+                                    }
+                            </td>
                             <td style="color:white">${item.LASTTRADEPRICE === 0 ? '-' : item.LASTTRADEPRICE}</td>
                         </tr>`;
 
@@ -460,6 +470,7 @@
                         // to get real strike price in dropdown and display in view file
                         strikeRange += `<option>${item.value}</option>`;
                         strikePrice.push(item.value);
+                        // Included  PRICECHANGEPERCENTAGE% (old_OI) In => callArr
 
                         $('#starting').html('<option></option>');
 
@@ -467,7 +478,17 @@
                         <tr>
                             <td style="color:white; background-color: #22272f; border-bottom: hidden;">${item.value}</td>
                             <td style="color:white">${item.LASTTRADEPRICE === 0 ? '-' : item.LASTTRADEPRICE}</td>
-                            <td style="color:white">${item.PRICECHANGEPERCENTAGE === 0 ? '-' : item.PRICECHANGEPERCENTAGE}</td>
+                            <td style="color:white">
+                                    ${
+                                        (() => {
+                                            const new_OI = item.OPENINTEREST;
+                                            const change_in_OI = item.OPENINTERESTCHANGE;
+                                            const old_OI = new_OI - change_in_OI;
+                                            const roundedPercentage = old_OI === 0 ? 0 : Math.ceil((change_in_OI / old_OI) * 100);
+                                            return roundedPercentage === 0 ? '-' : roundedPercentage + '%';
+                                        })()
+                                    }
+                            </td>
                             <td style="color:white">${item.TOTALQTYTRADED === 0 ? '-' : item.TOTALQTYTRADED}</td>
                             <td style="color: ${item.OPENINTERESTCHANGE < 0 ? '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')}">
                                 ${item.OPENINTERESTCHANGE === 0 ? '-' : item.OPENINTERESTCHANGE}
@@ -602,12 +623,25 @@
 
                     response.callArr.forEach(function(item, key) {
                         totalCallsOpenInterest1 += item.OPENINTEREST;
+
+                        // Included  PRICECHANGEPERCENTAGE % (old_OI) In => callArr
+
                         updatedHtml += `<tr>
                                             <td style="color:white">${parseInt(key + 1)}</td>
                                             <td style="color:white">${item.OPENINTEREST || '-'}</td>
                                             <td style="color:  ${item.OPENINTERESTCHANGE < 0 ? '#ff4c4c' : (item.OPENINTERESTCHANGE > 0 ? '#0edb67' : 'white')}">${item.OPENINTERESTCHANGE || '-'}</td>
                                             <td style="color:white">${item.TOTALQTYTRADED || '-'}</td>
-                                            <td style="color:white">${item.PRICECHANGEPERCENTAGE || '-'}</td>
+                                            <td style="color:white">
+                                                    ${
+                                                        (() => {
+                                                            const new_OI = item.OPENINTEREST;
+                                                            const change_in_OI = item.OPENINTERESTCHANGE;
+                                                            const old_OI = new_OI - change_in_OI;
+                                                            const roundedPercentage = old_OI === 0 ? 0 : Math.ceil((change_in_OI / old_OI) * 100);
+                                                            return roundedPercentage === 0 ? '-' : roundedPercentage + '%';
+                                                        })()
+                                                    }
+                                            </td>
                                             <td style="color:white">${item.LASTTRADEPRICE || '-'}</td>
                                         </tr>`;
                     });
