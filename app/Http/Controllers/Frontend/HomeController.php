@@ -19,89 +19,65 @@ class HomeController extends Controller
     {
         return view('frontend.index');
     }
-
     public function Nifty()
     {
         $expiryDT = 'http://nimblerest.lisuns.com:4531/GetExpiryDates/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=NIFTY';
         $curlExp = curl_init();
-        curl_setopt($curlExp, CURLOPT_URL, $expiryDT);
-        curl_setopt($curlExp, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curlExp, CURLOPT_SSL_VERIFYPEER, false);
-        $expApiResult = curl_exec($curlExp);
+        curl_setopt_array($curlExp, [
+            CURLOPT_URL => $expiryDT,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+        ]);
+        $expApiResult = json_decode(curl_exec($curlExp), true);
         curl_close($curlExp);
-        $expApiResult = json_decode($expApiResult, true);
 
-        //  old Code
-        // $expDt = $expApiResult['EXPIRYDATES'];
-
-        //  New Code
         $expDt = isset($expApiResult['EXPIRYDATES']) ? $expApiResult['EXPIRYDATES'] : [];
-
-        $initialDateSet = false; // Variable to track if initial date is set
         $expAray = [];
-
-        if (isset($expDt) && is_array($expDt) && count($expDt) > 0) {
-            foreach ($expDt as $index => $option) {
-                $dateString = $option;
-                $carbonDate = Carbon::createFromFormat('dMY', $dateString);
-                $timestamp = $carbonDate->timestamp;
-
-                // Get the current timestamp
-                $currentTimestamp = Carbon::now()->timestamp;
-
-                // Compare the timestamps to determine if the date is upcoming or current
-                $isUpcomingOrCurrent = $timestamp >= $currentTimestamp;
-
-                // Check if the current option is the upcoming date after 25th July 2023
-                $isUpcomingAfterInitial = !$initialDateSet && $isUpcomingOrCurrent;
-
-                // Set initial date selection only once
-                if ($isUpcomingAfterInitial) {
-                    $initialDateSet = true;
-                }
-                $expAray[] = [
-                    'option' => $option,
-                    'isUpcomingAfterInitial' => $isUpcomingAfterInitial,
-                ];
-            }
-        }
-
         $selectedDate = null;
 
-        foreach ($expAray as $item) {
-            if ($item['isUpcomingAfterInitial'] == 1) {
-                $selectedDate = $item['option'];
-                break;
+        foreach ($expDt as $option) {
+            $carbonDate = Carbon::createFromFormat('dMY', $option);
+            $timestamp = $carbonDate->timestamp;
+            $currentTimestamp = time();
+            $isUpcomingOrCurrent = $timestamp >= $currentTimestamp;
+            $isUpcomingAfterInitial = empty($selectedDate) && $isUpcomingOrCurrent;
+
+            if ($isUpcomingAfterInitial) {
+                $selectedDate = $option;
             }
+
+            $expAray[] = [
+                'option' => $option,
+                'isUpcomingAfterInitial' => $isUpcomingAfterInitial,
+            ];
         }
 
         $apiEndpoint = 'http://nimblerest.lisuns.com:4531/GetLastQuoteOptionChain/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=NIFTY&expiry=' . $selectedDate;
+
         try {
             $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $apiEndpoint); // Set the URL
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // Return the response instead of printing it
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification (not recommended in production)
+            curl_setopt_array($curl, [
+                CURLOPT_URL => $apiEndpoint,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_SSL_VERIFYPEER => false,
+            ]);
 
-            // Execute the cURL request
-            $apiResult = curl_exec($curl);
+            $apiResult = json_decode(curl_exec($curl), true);
             curl_close($curl);
 
-            // Convert the JSON response to an associative array
-            $apiResult = json_decode($apiResult, true);
             $putArr = [];
             $callArr = [];
 
-            foreach ($apiResult as $key => $result) {
+            foreach ($apiResult as $result) {
                 $identi = explode('_', $result['INSTRUMENTIDENTIFIER']);
 
                 if ($identi[3] == 'CE') {
-                    array_push($callArr, $result);
+                    $callArr[] = array_merge($result, ['value' => end($identi)]);
                 } elseif ($identi[3] == 'PE') {
-                    array_push($putArr, $result);
+                    $putArr[] = array_merge($result, ['value' => end($identi)]);
                 }
             }
 
-            // Extract the desired value from the INSTRUMENTIDENTIFIER
             $putArr = array_map(function ($item) {
                 $identi = explode('_', $item['INSTRUMENTIDENTIFIER']);
                 $item['value'] = end($identi);
@@ -121,88 +97,76 @@ class HomeController extends Controller
         }
     }
 
+    /**
+     * Fetches and displays Bank Nifty option chain data.
+     *
+     * This function retrieves expiry dates for Bank Nifty options, selects the upcoming or current
+     * expiry date, fetches the option chain data for that date, and prepares the data for display
+     * on the frontend.
+     *
+     *
+     */
     public function BankNifty()
     {
-        $expiryDT = 'http://nimblerest.lisuns.com:4531/GetExpiryDates/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=BANKNIFTY';
-        $curlExp = curl_init();
-        curl_setopt($curlExp, CURLOPT_URL, $expiryDT);
-        curl_setopt($curlExp, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curlExp, CURLOPT_SSL_VERIFYPEER, false);
-        $expApiResult = curl_exec($curlExp);
-        curl_close($curlExp);
-        $expApiResult = json_decode($expApiResult, true);
+        // Retrieve expiry dates from the API
+        $expiryApiUrl = 'http://nimblerest.lisuns.com:4531/GetExpiryDates/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=BANKNIFTY';
+        $expApiResult = json_decode(file_get_contents($expiryApiUrl), true);
+        $expDt = $expApiResult['EXPIRYDATES'] ?? [];
 
-        //  old Code
-        // $expDt = $expApiResult['EXPIRYDATES'];
+        // Get the current timestamp
+        $currentTimestamp = time();
 
-        //  New Code
-        $expDt = isset($expApiResult['EXPIRYDATES']) ? $expApiResult['EXPIRYDATES'] : [];
-
-        $initialDateSet = false; // Variable to track if initial date is set
+        // Prepare an array to store expiry dates and information about their upcoming status
         $expAray = [];
-
-        if (isset($expDt) && is_array($expDt) && count($expDt) > 0) {
-            foreach ($expDt as $index => $option) {
-                $dateString = $option;
-                $carbonDate = Carbon::createFromFormat('dMY', $dateString);
-                $timestamp = $carbonDate->timestamp;
-
-                // Get the current timestamp
-                $currentTimestamp = Carbon::now()->timestamp;
-
-                // Compare the timestamps to determine if the date is upcoming or current
-                $isUpcomingOrCurrent = $timestamp >= $currentTimestamp;
-
-                // Check if the current option is the upcoming date after 25th July 2023
-                $isUpcomingAfterInitial = !$initialDateSet && $isUpcomingOrCurrent;
-
-                // Set initial date selection only once
-                if ($isUpcomingAfterInitial) {
-                    $initialDateSet = true;
-                }
-                $expAray[] = [
-                    'option' => $option,
-                    'isUpcomingAfterInitial' => $isUpcomingAfterInitial,
-                ];
-            }
-        }
-
         $selectedDate = null;
 
-        foreach ($expAray as $item) {
-            if ($item['isUpcomingAfterInitial'] == 1) {
-                $selectedDate = $item['option'];
-                break;
+        // Iterate through expiry dates to find the upcoming or current one
+        foreach ($expDt as $option) {
+            $carbonDate = Carbon::createFromFormat('dMY', $option);
+            $timestamp = $carbonDate->timestamp;
+            $isUpcomingOrCurrent = $timestamp >= $currentTimestamp;
+            $isUpcomingAfterInitial = empty($selectedDate) && $isUpcomingOrCurrent;
+
+            if ($isUpcomingAfterInitial) {
+                $selectedDate = $option;
             }
+
+            $expAray[] = [
+                'option' => $option,
+                'isUpcomingAfterInitial' => $isUpcomingAfterInitial,
+            ];
         }
 
+        // Prepare the API endpoint for the selected expiry date
         $apiEndpoint = 'http://nimblerest.lisuns.com:4531/GetLastQuoteOptionChain/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=BANKNIFTY&expiry=' . $selectedDate;
-        try {
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $apiEndpoint); // Set the URL
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // Return the response instead of printing it
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification (not recommended in production)
 
-            // Execute the cURL request
-            $apiResult = curl_exec($curl);
+        try {
+            // Fetch option chain data using cURL
+            $curl = curl_init();
+            curl_setopt_array($curl, [
+                CURLOPT_URL => $apiEndpoint,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_SSL_VERIFYPEER => false,
+            ]);
+            $apiResult = json_decode(curl_exec($curl), true);
             curl_close($curl);
 
-            // Convert the JSON response to an associative array
-            $apiResult = json_decode($apiResult, true);
+            // Prepare arrays to store call and put options data
             $putArr = [];
             $callArr = [];
 
-            foreach ($apiResult as $key => $result) {
+            // Iterate through the API result to categorize options as call or put
+            foreach ($apiResult as $result) {
                 $identi = explode('_', $result['INSTRUMENTIDENTIFIER']);
 
                 if ($identi[3] == 'CE') {
-                    array_push($callArr, $result);
+                    $callArr[] = array_merge($result, ['value' => end($identi)]);
                 } elseif ($identi[3] == 'PE') {
-                    array_push($putArr, $result);
+                    $putArr[] = array_merge($result, ['value' => end($identi)]);
                 }
             }
 
-            // Extract the desired value from the INSTRUMENTIDENTIFIER
+            // Extract option values and map them to the corresponding options
             $putArr = array_map(function ($item) {
                 $identi = explode('_', $item['INSTRUMENTIDENTIFIER']);
                 $item['value'] = end($identi);
@@ -215,8 +179,10 @@ class HomeController extends Controller
                 return $item;
             }, $callArr);
 
+            // Return the view with prepared data for frontend display
             return view('frontend.banknifty', compact('putArr', 'callArr', 'expAray'));
         } catch (\Exception $e) {
+            // Log errors and return view with data set to null in case of exceptions
             error_log($e->getMessage());
             return view('frontend.banknifty', ['data' => null]);
         }
@@ -226,83 +192,61 @@ class HomeController extends Controller
     {
         $expiryDT = 'http://nimblerest.lisuns.com:4531/GetExpiryDates/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=FINNIFTY';
         $curlExp = curl_init();
-        curl_setopt($curlExp, CURLOPT_URL, $expiryDT);
-        curl_setopt($curlExp, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curlExp, CURLOPT_SSL_VERIFYPEER, false);
-        $expApiResult = curl_exec($curlExp);
+        curl_setopt_array($curlExp, [
+            CURLOPT_URL => $expiryDT,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+        ]);
+        $expApiResult = json_decode(curl_exec($curlExp), true);
         curl_close($curlExp);
-        $expApiResult = json_decode($expApiResult, true);
-        //  old Code
-        // $expDt = $expApiResult['EXPIRYDATES'];
 
-        //  New Code
         $expDt = isset($expApiResult['EXPIRYDATES']) ? $expApiResult['EXPIRYDATES'] : [];
-
-        $initialDateSet = false; // Variable to track if initial date is set
         $expAray = [];
-
-        if (isset($expDt) && is_array($expDt) && count($expDt) > 0) {
-            foreach ($expDt as $index => $option) {
-                $dateString = $option;
-                $carbonDate = Carbon::createFromFormat('dMY', $dateString);
-                $timestamp = $carbonDate->timestamp;
-
-                // Get the current timestamp
-                $currentTimestamp = Carbon::now()->timestamp;
-
-                // Compare the timestamps to determine if the date is upcoming or current
-                $isUpcomingOrCurrent = $timestamp >= $currentTimestamp;
-
-                // Check if the current option is the upcoming date after 25th July 2023
-                $isUpcomingAfterInitial = !$initialDateSet && $isUpcomingOrCurrent;
-
-                // Set initial date selection only once
-                if ($isUpcomingAfterInitial) {
-                    $initialDateSet = true;
-                }
-                $expAray[] = [
-                    'option' => $option,
-                    'isUpcomingAfterInitial' => $isUpcomingAfterInitial,
-                ];
-            }
-        }
-
         $selectedDate = null;
 
-        foreach ($expAray as $item) {
-            if ($item['isUpcomingAfterInitial'] == 1) {
-                $selectedDate = $item['option'];
-                break;
+        foreach ($expDt as $option) {
+            $carbonDate = Carbon::createFromFormat('dMY', $option);
+            $timestamp = $carbonDate->timestamp;
+            $currentTimestamp = time();
+            $isUpcomingOrCurrent = $timestamp >= $currentTimestamp;
+            $isUpcomingAfterInitial = empty($selectedDate) && $isUpcomingOrCurrent;
+
+            if ($isUpcomingAfterInitial) {
+                $selectedDate = $option;
             }
+
+            $expAray[] = [
+                'option' => $option,
+                'isUpcomingAfterInitial' => $isUpcomingAfterInitial,
+            ];
         }
 
         $apiEndpoint = 'http://nimblerest.lisuns.com:4531/GetLastQuoteOptionChain/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=FINNIFTY&expiry=' . $selectedDate;
+
         try {
             $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $apiEndpoint); // Set the URL
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // Return the response instead of printing it
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); // Disable SSL verification (not recommended in production)
+            curl_setopt_array($curl, [
+                CURLOPT_URL => $apiEndpoint,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_SSL_VERIFYPEER => false,
+            ]);
 
-            // Execute the cURL request
-            $apiResult = curl_exec($curl);
+            $apiResult = json_decode(curl_exec($curl), true);
             curl_close($curl);
 
-            // Convert the JSON response to an associative array
-            $apiResult = json_decode($apiResult, true);
             $putArr = [];
             $callArr = [];
 
-            foreach ($apiResult as $key => $result) {
+            foreach ($apiResult as $result) {
                 $identi = explode('_', $result['INSTRUMENTIDENTIFIER']);
 
                 if ($identi[3] == 'CE') {
-                    array_push($callArr, $result);
+                    $callArr[] = array_merge($result, ['value' => end($identi)]);
                 } elseif ($identi[3] == 'PE') {
-                    array_push($putArr, $result);
+                    $putArr[] = array_merge($result, ['value' => end($identi)]);
                 }
             }
 
-            // Extract the desired value from the INSTRUMENTIDENTIFIER
             $putArr = array_map(function ($item) {
                 $identi = explode('_', $item['INSTRUMENTIDENTIFIER']);
                 $item['value'] = end($identi);

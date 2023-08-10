@@ -450,9 +450,11 @@
                                             const change_in_OI = item.OPENINTERESTCHANGE;
                                             const old_OI = new_OI - change_in_OI;
                                             const roundedPercentage = old_OI === 0 ? 0 : Math.ceil((change_in_OI / old_OI) * 100);
-                                            return roundedPercentage === 0 ? '-' : roundedPercentage + '%';
+                                             return roundedPercentage ? `${roundedPercentage}%` : '-';
                                         })()
                                     }
+
+
                             </td>
                             <td style="color:white">${item.LASTTRADEPRICE === 0 ? '-' : item.LASTTRADEPRICE}</td>
                         </tr>`;
@@ -485,7 +487,7 @@
                                             const change_in_OI = item.OPENINTERESTCHANGE;
                                             const old_OI = new_OI - change_in_OI;
                                             const roundedPercentage = old_OI === 0 ? 0 : Math.ceil((change_in_OI / old_OI) * 100);
-                                            return roundedPercentage === 0 ? '-' : roundedPercentage + '%';
+                                             return roundedPercentage ? `${roundedPercentage}%` : '-';
                                         })()
                                     }
                             </td>
@@ -638,7 +640,7 @@
                                                             const change_in_OI = item.OPENINTERESTCHANGE;
                                                             const old_OI = new_OI - change_in_OI;
                                                             const roundedPercentage = old_OI === 0 ? 0 : Math.ceil((change_in_OI / old_OI) * 100);
-                                                            return roundedPercentage === 0 ? '-' : roundedPercentage + '%';
+                                                             return roundedPercentage ? `${roundedPercentage}%` : '-';
                                                         })()
                                                     }
                                             </td>
@@ -670,7 +672,7 @@
                                                             const change_in_OI = item.OPENINTERESTCHANGE;
                                                             const old_OI = new_OI - change_in_OI;
                                                             const roundedPercentage = old_OI === 0 ? 0 : Math.ceil((change_in_OI / old_OI) * 100);
-                                                            return roundedPercentage === 0 ? '-' : roundedPercentage + '%';
+                                                             return roundedPercentage ? `${roundedPercentage}%` : '-';
                                                         })()
                                                     }
                                             </td>
