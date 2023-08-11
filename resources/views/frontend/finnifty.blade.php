@@ -656,16 +656,40 @@
                     $(".callCurrentData").hide();
 
                     let updatedHtml1 = '<div class="d-flex "><table>';
+
+
+                    // Get starting and ending ranges, and calculate center value
+                    const startingRange = parseFloat($("#starting").val());
+                    const endingRange = parseFloat($("#ending").val());
+                    const centerValue = (startingRange + endingRange) / 2;
+
+                    //-----------------------------------
+
+
                     response.putArr.forEach(function(item) {
                         totalPutsOpenInterest1 += item.OPENINTEREST;
+
+
+                        // Set default background color Calculate the background color based on the center value
+                        let backgroundColor = '#22272f';
+                        let fontColor = 'white'; // Default font color
+
+                        // Included  PRICECHANGEPERCENTAGE % (old_OI) In => callArr
+
+                        // Check if the current value is the center value
+                        if (item.value == centerValue) {
+                            backgroundColor =
+                                '#ffb020'; // Light background color for center value
+                            fontColor = 'black'; // Change font color to black for center value
+                        }
 
 
                         // Included  PRICECHANGEPERCENTAGE % (old_OI) In => callArr
 
 
                         updatedHtml1 += `<tr>
-                                            <td style="color:white; background-color: #22272f; border-bottom: hidden;">${item.value}</td>
-                                            <td style="color:white">${item.LASTTRADEPRICE || '-'}</td>
+                            <td style="color:${fontColor}; background-color:${backgroundColor}; border-bottom:hidden;">${item.value}</td>
+                                               <td style="color:white">${item.LASTTRADEPRICE || '-'}</td>
                                             <td style="color:white">
                                                     ${
                                                         (() => {
