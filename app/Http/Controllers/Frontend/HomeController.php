@@ -19,26 +19,20 @@ class HomeController extends Controller
     {
         return view('frontend.index');
     }
+
     public function Nifty()
     {
-        $expiryDT = 'http://nimblerest.lisuns.com:4531/GetExpiryDates/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=NIFTY';
-        $curlExp = curl_init();
-        curl_setopt_array($curlExp, [
-            CURLOPT_URL => $expiryDT,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_SSL_VERIFYPEER => false,
-        ]);
-        $expApiResult = json_decode(curl_exec($curlExp), true);
-        curl_close($curlExp);
+        $expiryApiUrl = 'http://nimblerest.lisuns.com:4531/GetExpiryDates/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=NIFTY';
+        $expApiResult = Http::get($expiryApiUrl)->json();
+        $expDt = $expApiResult['EXPIRYDATES'] ?? [];
 
-        $expDt = isset($expApiResult['EXPIRYDATES']) ? $expApiResult['EXPIRYDATES'] : [];
-        $expAray = [];
+        $currentTimestamp = time();
+        $expArray = [];
         $selectedDate = null;
 
         foreach ($expDt as $option) {
             $carbonDate = Carbon::createFromFormat('dMY', $option);
             $timestamp = $carbonDate->timestamp;
-            $currentTimestamp = time();
             $isUpcomingOrCurrent = $timestamp >= $currentTimestamp;
             $isUpcomingAfterInitial = empty($selectedDate) && $isUpcomingOrCurrent;
 
@@ -46,7 +40,7 @@ class HomeController extends Controller
                 $selectedDate = $option;
             }
 
-            $expAray[] = [
+            $expArray[] = [
                 'option' => $option,
                 'isUpcomingAfterInitial' => $isUpcomingAfterInitial,
             ];
@@ -55,26 +49,19 @@ class HomeController extends Controller
         $apiEndpoint = 'http://nimblerest.lisuns.com:4531/GetLastQuoteOptionChain/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=NIFTY&expiry=' . $selectedDate;
 
         try {
-            $curl = curl_init();
-            curl_setopt_array($curl, [
-                CURLOPT_URL => $apiEndpoint,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_SSL_VERIFYPEER => false,
-            ]);
-
-            $apiResult = json_decode(curl_exec($curl), true);
-            curl_close($curl);
+            $apiResult = Http::get($apiEndpoint)->json();
 
             $putArr = [];
             $callArr = [];
 
             foreach ($apiResult as $result) {
                 $identi = explode('_', $result['INSTRUMENTIDENTIFIER']);
+                $value = end($identi);
 
                 if ($identi[3] == 'CE') {
-                    $callArr[] = array_merge($result, ['value' => end($identi)]);
+                    $callArr[] = array_merge($result, ['value' => $value]);
                 } elseif ($identi[3] == 'PE') {
-                    $putArr[] = array_merge($result, ['value' => end($identi)]);
+                    $putArr[] = array_merge($result, ['value' => $value]);
                 }
             }
 
@@ -90,13 +77,12 @@ class HomeController extends Controller
                 return $item;
             }, $callArr);
 
-            return view('frontend.nifty', compact('putArr', 'callArr', 'expAray'));
+            return view('frontend.nifty', compact('putArr', 'callArr', 'expArray'));
         } catch (\Exception $e) {
             error_log($e->getMessage());
-            return view('frontend.nifty', ['data' => null]);
+            return view('frontend.nifty', ['putArr' => [], 'callArr' => [], 'expArray' => []]);
         }
     }
-
     /**
      * Fetches and displays Bank Nifty option chain data.
      *
@@ -110,14 +96,14 @@ class HomeController extends Controller
     {
         // Retrieve expiry dates from the API
         $expiryApiUrl = 'http://nimblerest.lisuns.com:4531/GetExpiryDates/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=BANKNIFTY';
-        $expApiResult = json_decode(file_get_contents($expiryApiUrl), true);
+        $expApiResult = Http::get($expiryApiUrl)->json();
         $expDt = $expApiResult['EXPIRYDATES'] ?? [];
 
         // Get the current timestamp
         $currentTimestamp = time();
 
         // Prepare an array to store expiry dates and information about their upcoming status
-        $expAray = [];
+        $expArray = [];
         $selectedDate = null;
 
         // Iterate through expiry dates to find the upcoming or current one
@@ -131,7 +117,7 @@ class HomeController extends Controller
                 $selectedDate = $option;
             }
 
-            $expAray[] = [
+            $expArray[] = [
                 'option' => $option,
                 'isUpcomingAfterInitial' => $isUpcomingAfterInitial,
             ];
@@ -141,15 +127,8 @@ class HomeController extends Controller
         $apiEndpoint = 'http://nimblerest.lisuns.com:4531/GetLastQuoteOptionChain/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=BANKNIFTY&expiry=' . $selectedDate;
 
         try {
-            // Fetch option chain data using cURL
-            $curl = curl_init();
-            curl_setopt_array($curl, [
-                CURLOPT_URL => $apiEndpoint,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_SSL_VERIFYPEER => false,
-            ]);
-            $apiResult = json_decode(curl_exec($curl), true);
-            curl_close($curl);
+            // Fetch option chain data using LARAVEl Function And Removed cURL request
+            $apiResult = Http::get($apiEndpoint)->json();
 
             // Prepare arrays to store call and put options data
             $putArr = [];
@@ -158,11 +137,12 @@ class HomeController extends Controller
             // Iterate through the API result to categorize options as call or put
             foreach ($apiResult as $result) {
                 $identi = explode('_', $result['INSTRUMENTIDENTIFIER']);
+                $value = end($identi);
 
                 if ($identi[3] == 'CE') {
-                    $callArr[] = array_merge($result, ['value' => end($identi)]);
+                    $callArr[] = array_merge($result, ['value' => $value]);
                 } elseif ($identi[3] == 'PE') {
-                    $putArr[] = array_merge($result, ['value' => end($identi)]);
+                    $putArr[] = array_merge($result, ['value' => $value]);
                 }
             }
 
@@ -179,35 +159,27 @@ class HomeController extends Controller
                 return $item;
             }, $callArr);
 
-            // Return the view with prepared data for frontend display
-            return view('frontend.banknifty', compact('putArr', 'callArr', 'expAray'));
+            return view('frontend.banknifty', compact('putArr', 'callArr', 'expArray'));
         } catch (\Exception $e) {
-            // Log errors and return view with data set to null in case of exceptions
             error_log($e->getMessage());
-            return view('frontend.banknifty', ['data' => null]);
+            return view('frontend.banknifty', ['putArr' => [], 'callArr' => [], 'expArray' => []]);
         }
     }
 
     public function FinNifty()
     {
         $expiryDT = 'http://nimblerest.lisuns.com:4531/GetExpiryDates/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=FINNIFTY';
-        $curlExp = curl_init();
-        curl_setopt_array($curlExp, [
-            CURLOPT_URL => $expiryDT,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_SSL_VERIFYPEER => false,
-        ]);
-        $expApiResult = json_decode(curl_exec($curlExp), true);
-        curl_close($curlExp);
+
+        $expApiResult = Http::get($expiryDT)->json();
 
         $expDt = isset($expApiResult['EXPIRYDATES']) ? $expApiResult['EXPIRYDATES'] : [];
-        $expAray = [];
+        $expArray = [];
         $selectedDate = null;
+        $currentTimestamp = time();
 
         foreach ($expDt as $option) {
             $carbonDate = Carbon::createFromFormat('dMY', $option);
             $timestamp = $carbonDate->timestamp;
-            $currentTimestamp = time();
             $isUpcomingOrCurrent = $timestamp >= $currentTimestamp;
             $isUpcomingAfterInitial = empty($selectedDate) && $isUpcomingOrCurrent;
 
@@ -215,7 +187,7 @@ class HomeController extends Controller
                 $selectedDate = $option;
             }
 
-            $expAray[] = [
+            $expArray[] = [
                 'option' => $option,
                 'isUpcomingAfterInitial' => $isUpcomingAfterInitial,
             ];
@@ -224,45 +196,26 @@ class HomeController extends Controller
         $apiEndpoint = 'http://nimblerest.lisuns.com:4531/GetLastQuoteOptionChain/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=FINNIFTY&expiry=' . $selectedDate;
 
         try {
-            $curl = curl_init();
-            curl_setopt_array($curl, [
-                CURLOPT_URL => $apiEndpoint,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_SSL_VERIFYPEER => false,
-            ]);
-
-            $apiResult = json_decode(curl_exec($curl), true);
-            curl_close($curl);
+            $apiResult = Http::get($apiEndpoint)->json();
 
             $putArr = [];
             $callArr = [];
 
             foreach ($apiResult as $result) {
                 $identi = explode('_', $result['INSTRUMENTIDENTIFIER']);
+                $value = end($identi);
 
                 if ($identi[3] == 'CE') {
-                    $callArr[] = array_merge($result, ['value' => end($identi)]);
+                    $callArr[] = array_merge($result, ['value' => $value]);
                 } elseif ($identi[3] == 'PE') {
-                    $putArr[] = array_merge($result, ['value' => end($identi)]);
+                    $putArr[] = array_merge($result, ['value' => $value]);
                 }
             }
 
-            $putArr = array_map(function ($item) {
-                $identi = explode('_', $item['INSTRUMENTIDENTIFIER']);
-                $item['value'] = end($identi);
-                return $item;
-            }, $putArr);
-
-            $callArr = array_map(function ($item) {
-                $identi = explode('_', $item['INSTRUMENTIDENTIFIER']);
-                $item['value'] = end($identi);
-                return $item;
-            }, $callArr);
-
-            return view('frontend.finnifty', compact('putArr', 'callArr', 'expAray'));
+            return view('frontend.finnifty', compact('putArr', 'callArr', 'expArray'));
         } catch (\Exception $e) {
             error_log($e->getMessage());
-            return view('frontend.finnifty', ['data' => null]);
+            return view('frontend.finnifty', ['putArr' => [], 'callArr' => [], 'expArray' => []]);
         }
     }
 
@@ -270,15 +223,11 @@ class HomeController extends Controller
     {
         $starting = request()->query('starting');
         $ending = request()->query('ending');
+
         try {
             $apiEndpoint = 'http://nimblerest.lisuns.com:4531/GetLastQuoteOptionChain/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=FINNIFTY&expiry=' . $id;
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $apiEndpoint);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            $apiResult = curl_exec($curl);
-            curl_close($curl);
-            $apiResult = json_decode($apiResult, true);
+            $apiResult = Http::get($apiEndpoint)->json();
+
             $putArr = [];
             $callArr = [];
 
@@ -309,8 +258,6 @@ class HomeController extends Controller
 
                 $callArr1 = array_filter($callArr, function ($item) use ($starting, $ending) {
                     $identi = explode('_', $item['INSTRUMENTIDENTIFIER']);
-                    $item['dd'] = 2;
-
                     return end($identi) >= $starting && end($identi) <= $ending;
                 });
 
@@ -338,22 +285,23 @@ class HomeController extends Controller
             }
         } catch (\Exception $e) {
             error_log($e->getMessage());
+            return response()->json(
+                [
+                    'error' => 'An error occurred while processing the request.',
+                ],
+                500,
+            );
         }
     }
-
     public function getBankNiftywithDt($id)
     {
         $starting = request()->query('starting');
         $ending = request()->query('ending');
+
         try {
             $apiEndpoint = 'http://nimblerest.lisuns.com:4531/GetLastQuoteOptionChain/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=BANKNIFTY&expiry=' . $id;
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $apiEndpoint);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            $apiResult = curl_exec($curl);
-            curl_close($curl);
-            $apiResult = json_decode($apiResult, true);
+            $apiResult = Http::get($apiEndpoint)->json();
+
             $putArr = [];
             $callArr = [];
 
@@ -384,8 +332,6 @@ class HomeController extends Controller
 
                 $callArr1 = array_filter($callArr, function ($item) use ($starting, $ending) {
                     $identi = explode('_', $item['INSTRUMENTIDENTIFIER']);
-                    $item['dd'] = 2;
-
                     return end($identi) >= $starting && end($identi) <= $ending;
                 });
 
@@ -413,6 +359,12 @@ class HomeController extends Controller
             }
         } catch (\Exception $e) {
             error_log($e->getMessage());
+            return response()->json(
+                [
+                    'error' => 'An error occurred while processing the request.',
+                ],
+                500,
+            );
         }
     }
 
@@ -420,15 +372,11 @@ class HomeController extends Controller
     {
         $starting = request()->query('starting');
         $ending = request()->query('ending');
+
         try {
             $apiEndpoint = 'http://nimblerest.lisuns.com:4531/GetLastQuoteOptionChain/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=NIFTY&expiry=' . $id;
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_URL, $apiEndpoint);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-            $apiResult = curl_exec($curl);
-            curl_close($curl);
-            $apiResult = json_decode($apiResult, true);
+            $apiResult = Http::get($apiEndpoint)->json();
+
             $putArr = [];
             $callArr = [];
 
@@ -459,8 +407,6 @@ class HomeController extends Controller
 
                 $callArr1 = array_filter($callArr, function ($item) use ($starting, $ending) {
                     $identi = explode('_', $item['INSTRUMENTIDENTIFIER']);
-                    $item['dd'] = 2;
-
                     return end($identi) >= $starting && end($identi) <= $ending;
                 });
 
@@ -488,8 +434,15 @@ class HomeController extends Controller
             }
         } catch (\Exception $e) {
             error_log($e->getMessage());
+            return response()->json(
+                [
+                    'error' => 'An error occurred while processing the request.',
+                ],
+                500,
+            );
         }
     }
+
     public function FnoRanking()
     {
         // Replace with your API URL

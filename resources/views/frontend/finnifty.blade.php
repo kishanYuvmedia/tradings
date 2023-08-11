@@ -19,7 +19,7 @@
                                 <select style="width: 234px; height: 37px; color: #a37213;background-color:#121419"
                                     id="expiry_date">
                                     <option value="" selected>Options</option>
-                                    @foreach ($expAray as $option)
+                                    @foreach ($expArray as $option)
                                         <option value="{{ $option['option'] }}"
                                             {{ $option['isUpcomingAfterInitial'] ? 'selected' : '' }}>
                                             {{ $option['option'] }}
@@ -33,6 +33,7 @@
             </div>
         </div>
     </div>
+
 
     {{-- -----------------------------------------------------------------------------------------------------Strike Range Function  --}}
 
