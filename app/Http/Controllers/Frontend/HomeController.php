@@ -219,6 +219,11 @@ class HomeController extends Controller
         }
     }
 
+    public function Midcap()
+    {
+        return view('frontend.midcap');
+    }
+
     public function getFinNiftywithDt($id)
     {
         $starting = request()->query('starting');

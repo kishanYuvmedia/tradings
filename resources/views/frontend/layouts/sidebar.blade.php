@@ -73,6 +73,11 @@
                                 <i class="metismenu-icon"></i><span>FINNIFTY</span>
                             </a>
                         </li>
+                        <li class="treeview">
+                            <a href="{{ URL::to('midcap') }}">
+                                <i class="metismenu-icon"></i><span>MIDCAP</span>
+                            </a>
+                        </li>
                     </ul>
                 </li>
 

@@ -8,6 +8,7 @@ Route::get('/optionChain', 'HomeController@OptionChain');
 Route::get('/niftItSectoral', 'HomeController@NiftItSectoral');
 Route::get('/viewNews/{blog}', 'HomeController@viewNews');
 Route::get('/fnoRanking', 'HomeController@FnoRanking');
+Route::get('/midcap', 'HomeController@Midcap');
 
 
 
