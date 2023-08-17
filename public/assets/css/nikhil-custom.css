@@ -60,18 +60,18 @@ html,body
 } */
 /* Add background color to odd rows */
 .nifty-table-call tbody tr:nth-child(odd) {
-  background-color: #121419;
+  background-color: #161a20;
 }
 
 .nifty-table-call tbody tr:nth-child(even) {
-  background-color: #232a34;
+  background-color: #1b2027;
 }
 
 .nifty-table-put tbody tr:nth-child(odd) {
-  background-color: #121419;
+  background-color: #161a20;
 }
 .nifty-table-put tbody tr:nth-child(even) {
-  background-color: #232a34;
+  background-color: #1b2027;
 }
 
 .nifty-table-call, .nifty-table-put {
