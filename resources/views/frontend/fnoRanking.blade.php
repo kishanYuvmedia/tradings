@@ -1,5 +1,5 @@
 @extends('frontend.layouts.master')
-@section('title', 'BankNifty')
+@section('title', 'NFO-Ranking')
 @section('content')
     @php
         use Carbon\Carbon;

@@ -221,7 +221,55 @@ class HomeController extends Controller
 
     public function Midcap()
     {
-        return view('frontend.midcap');
+        $expiryDT = 'http://nimblerest.lisuns.com:4531/GetExpiryDates/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=MIDCPNIFTY';
+
+        $expApiResult = Http::get($expiryDT)->json();
+
+        $expDt = isset($expApiResult['EXPIRYDATES']) ? $expApiResult['EXPIRYDATES'] : [];
+        $expArray = [];
+        $selectedDate = null;
+        $currentTimestamp = time();
+
+        foreach ($expDt as $option) {
+            $carbonDate = Carbon::createFromFormat('dMY', $option);
+            $timestamp = $carbonDate->timestamp;
+            $isUpcomingOrCurrent = $timestamp >= $currentTimestamp;
+            $isUpcomingAfterInitial = empty($selectedDate) && $isUpcomingOrCurrent;
+
+            if ($isUpcomingAfterInitial) {
+                $selectedDate = $option;
+            }
+
+            $expArray[] = [
+                'option' => $option,
+                'isUpcomingAfterInitial' => $isUpcomingAfterInitial,
+            ];
+        }
+
+        $apiEndpoint = 'http://nimblerest.lisuns.com:4531/GetLastQuoteOptionChain/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=MIDCPNIFTY&expiry=' . $selectedDate;
+
+        try {
+            $apiResult = Http::get($apiEndpoint)->json();
+
+            $putArr = [];
+            $callArr = [];
+
+            foreach ($apiResult as $result) {
+                $identi = explode('_', $result['INSTRUMENTIDENTIFIER']);
+                $value = end($identi);
+
+                if ($identi[3] == 'CE') {
+                    $callArr[] = array_merge($result, ['value' => $value]);
+                } elseif ($identi[3] == 'PE') {
+                    $putArr[] = array_merge($result, ['value' => $value]);
+                }
+            }
+
+            return view('frontend.midcap', compact('putArr', 'callArr', 'expArray'));
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+            return view('frontend.midcap', ['putArr' => [], 'callArr' => [], 'expArray' => []]);
+        }
     }
 
     public function getFinNiftywithDt($id)
@@ -448,6 +496,81 @@ class HomeController extends Controller
         }
     }
 
+    public function getMidcapwithDt($id)
+    {
+        $starting = request()->query('starting');
+        $ending = request()->query('ending');
+
+        try {
+            $apiEndpoint = 'http://nimblerest.lisuns.com:4531/GetLastQuoteOptionChain/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=MIDCPNIFTY&expiry=' . $id;
+            $apiResult = Http::get($apiEndpoint)->json();
+
+            $putArr = [];
+            $callArr = [];
+
+            foreach ($apiResult as $key => $result) {
+                $identi = explode('_', $result['INSTRUMENTIDENTIFIER']);
+
+                if ($identi[3] == 'CE') {
+                    array_push($callArr, $result);
+                } elseif ($identi[3] == 'PE') {
+                    array_push($putArr, $result);
+                }
+            }
+
+            // Extract the desired value from the INSTRUMENTIDENTIFIER
+
+            if ($starting !== null && $ending !== null) {
+                $putArr1 = array_map(
+                    function ($item) {
+                        $identi = explode('_', $item['INSTRUMENTIDENTIFIER']);
+                        $item['value'] = end($identi);
+                        return $item;
+                    },
+                    array_filter($putArr, function ($item) use ($starting, $ending) {
+                        $identi = explode('_', $item['INSTRUMENTIDENTIFIER']);
+                        return end($identi) >= $starting && end($identi) <= $ending;
+                    }),
+                );
+
+                $callArr1 = array_filter($callArr, function ($item) use ($starting, $ending) {
+                    $identi = explode('_', $item['INSTRUMENTIDENTIFIER']);
+                    return end($identi) >= $starting && end($identi) <= $ending;
+                });
+
+                return response()->json([
+                    'putArr' => array_values($putArr1), // Reset array keys after filtering
+                    'callArr' => array_values($callArr1), // Reset array keys after filtering
+                ]);
+            } else {
+                $putArr = array_map(function ($item) {
+                    $identi = explode('_', $item['INSTRUMENTIDENTIFIER']);
+                    $item['value'] = end($identi);
+                    return $item;
+                }, $putArr);
+
+                $callArr = array_map(function ($item) {
+                    $identi = explode('_', $item['INSTRUMENTIDENTIFIER']);
+                    $item['value'] = end($identi);
+                    return $item;
+                }, $callArr);
+
+                return response()->json([
+                    'putArr' => $putArr,
+                    'callArr' => $callArr,
+                ]);
+            }
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+            return response()->json(
+                [
+                    'error' => 'An error occurred while processing the request.',
+                ],
+                500,
+            );
+        }
+    }
+
     public function FnoRanking()
     {
         // Replace with your API URL
@@ -466,8 +589,7 @@ class HomeController extends Controller
             // Pass the PRODUCTS array to the view
             return view('frontend.fnoRanking', ['products' => $data['PRODUCTS']]);
         } catch (\Exception $e) {
-            // Handle any exceptions here (e.g., API error, connection error)
-            return view('frontend.fnoRanking', ['products' => []]);
+            return view('frontend.fnoRanking', ['products' => [], 'error' => $e->getMessage()]);
         }
     }
 }
