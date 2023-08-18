@@ -4394,7 +4394,7 @@ input[type="button"].btn-block {
     flex-direction: column;
     min-width: 0;
     word-wrap: break-word;
-    background-color: #121419;
+    background-color: #161a20;
     background-clip: border-box;
     /* border: 1px solid rgba(26, 54, 126, 0.125); */
     /* border-radius: 0.25rem; */
@@ -9365,7 +9365,7 @@ button,
     margin-top: -60px;
     padding-top: 60px;
     transition: all 0.2s;
-    background-color: #121419;
+    background-color: #161a20;
     border-bottom: solid;
     
 }
@@ -9881,7 +9881,7 @@ button,
 .app-main .app-main__inner {
     padding: 30px 5px 0;
     flex: 1;
-    background-color: #121419;
+    background-color: #161a20;
 }
 .app-theme-white.app-container {
     background: #f1f4f6;

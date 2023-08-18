@@ -16,7 +16,7 @@
                         <div class="card-body">
                             <div class="table-responsive">
                                 <label for="expiry_date" class="lable-expiry-date"><b>Select Expiry:</b></label>
-                                <select style="width: 234px; height: 37px; color: #a37213;background-color:#121419"
+                                <select style="width: 234px; height: 37px; color: #a37213;background-color:#1b2027"
                                     id="expiry_date">
                                     <option value="" selected>Options</option>
                                     @foreach ($expArray as $option)
@@ -45,9 +45,9 @@
                         <!-- Dropdown for starting strike price -->
                         <div class="table-responsive">
                             <label for="starting">
-                                <b style="color: #6c7687"> <span style="color:green">START </span>STRIKE PRICE :</b>
+                                <b style="color: #6c7687"> <span style="color:#00b700">START </span>STRIKE PRICE :</b>
                             </label>
-                            <select style="width: 234px; height: 37px; color: #a37213;background-color:#121419"
+                            <select style="width: 234px; height: 37px; color: #a37213;background-color:#1b2027"
                                 id="starting">
                                 @foreach ($putArr as $value)
                                     <option value="{{ $value['value'] }}">{{ $value['value'] }}</option>
@@ -59,7 +59,7 @@
                             <label for="ending">
                                 <b style="color: #6c7687"><span style="color:red">END </span> STRIKEPRICE :</b>
                             </label>
-                            <select style="width: 234px; height: 37px; color: #a37213;background-color:#121419"
+                            <select style="width: 234px; height: 37px; color: #a37213;background-color:#1b2027"
                                 id="ending">
                                 @foreach ($putArr as $value)
                                     <option value="{{ $value['value'] }}">{{ $value['value'] }}</option>
@@ -89,7 +89,7 @@
                         <!-- Call options table -->
                         <thead>
                             <tr>
-                                <td colspan="6" style=" background-color: #232a34;">
+                                <td colspan="6" style=" background-color: #1b2027;">
                                     <b style="font-size:16px;float:left;color:white"> Calls Option
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15.5"
                                             viewBox="0 0 16 13.5">
@@ -135,17 +135,15 @@
                                 </td>
                                 <td>{{ $value['TOTALQTYTRADED'] ?: '-' }}</td>
 
-
                                 {{-- Get percentageChangeOI --}}
 
 
-                                <td>
-                                    @php
-                                        $new_OI = $value['OPENINTEREST'];
-                                        $change_in_OI = $value['OPENINTERESTCHANGE'];
-                                        $old_OI = $new_OI - $change_in_OI;
-                                        $roundedPercentage = $old_OI == 0 ? 0 : ceil(($change_in_OI / $old_OI) * 100);
-                                    @endphp
+                                <td> @php
+                                    $new_OI = $value['OPENINTEREST'];
+                                    $change_in_OI = $value['OPENINTERESTCHANGE'];
+                                    $old_OI = $new_OI - $change_in_OI;
+                                    $roundedPercentage = $old_OI == 0 ? 0 : ceil(($change_in_OI / $old_OI) * 100);
+                                @endphp
                                     {{ $roundedPercentage == 0 ? '-' : $roundedPercentage . '%' }}
                                 </td>
                                 <td>{{ $value['LASTTRADEPRICE'] == 0 ? '-' : $value['LASTTRADEPRICE'] }}</td>
@@ -155,13 +153,13 @@
                             <!-- Add a new row to display the total counts for calls -->
 
                             <tr>
-                                <td style="background-color: #121419;">-</td>
+                                <td style="background-color: #1b2027;">-</td>
                                 @php
                                     $dataSets = [[$totalCallsOpenInterest, $totalCallsOpenInterestChange, $totalCallsTotalQtyTraded, 'OI'], [$totalCallsOpenInterestChange, $totalCallsOpenInterestChange, $totalCallsTotalQtyTraded, 'CIOI'], [$totalCallsTotalQtyTraded, $totalCallsOpenInterestChange, $totalCallsTotalQtyTraded, 'Traded']];
                                 @endphp
 
                                 @foreach ($dataSets as [$value, $change, $qtyTraded, $label])
-                                    <td style="color: #ffb020 ; background-color: #121419;">
+                                    <td style="color: #ffb020 ; background-color: #1b2027;">
                                         <b>
                                             @if ($value >= 10000000)
                                                 {{ number_format($value / 10000000, 2) }} Cr [{{ $label }}]
@@ -174,8 +172,8 @@
                                     </td>
                                 @endforeach
 
-                                <td style="background-color: #121419;">-</td>
-                                <td style="background-color: #121419;">-</td>
+                                <td style="background-color: #1b2027;">-</td>
+                                <td style="background-color: #1b2027;">-</td>
                             </tr>
 
                         </tbody>
@@ -187,7 +185,7 @@
                         <!-- Put options table -->
                         <thead>
                             <tr>
-                                <td colspan="6" style="color: red;background-color: #232a34;">
+                                <td colspan="6" style="color: red;background-color: #1b2027;">
                                     <b style="font-size:16px;float:right;color:white">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15.5"
                                             viewBox="0 0 16 13.5">
@@ -257,8 +255,8 @@
                             <!-- Add a new row to display the total counts for puts -->
                             <tr>
                                 <td style="background-color:#ffb020;;color: #000000;"><b>-: Total :-</b></td>
-                                <td rowspan="2" style="background-color: #121419">-</td>
-                                <td style="background-color: #121419">-</td>
+                                <td rowspan="2" style="background-color: #1b2027">-</td>
+                                <td style="background-color: #1b2027">-</td>
 
                                 {{-- CR And L Function  --}}
 
@@ -267,7 +265,7 @@
                                 @endphp
 
                                 @foreach ($dataSets as [$value, $label])
-                                    <td style="color: #ffb020">
+                                    <td style="color: #ffb020;background-color: #1b2027"">
                                         <b>
                                             @if ($value >= 10000000)
                                                 {{ number_format($value / 10000000, 2) }} Cr [{{ $label }}]
@@ -330,6 +328,129 @@
             </div>
         </div>
     </div>
+
+
+
+
+    <!-- ----------------------------------------------------------------------------------------------------------------------------------------New IntraData Table  -->
+
+
+
+
+
+
+    <div style="
+    margin-bottom: 50px;
+    margin-top: 50px;
+    margin-left: 19px;
+    margin-right: 17px;
+">
+        <table style="margin:auto;width: -webkit-fill-available;text-align: center;">
+
+            <thead>
+                <tr>
+                    <td colspan="12" style=" background-color: #1b2027;">
+                        <b style="font-size:16px;float:left;color:white"> Intraday Data
+
+                    </td>
+                </tr>
+
+                <tr style="color: #6c7687">
+                    <th style="color:#ffffff">SR</th>
+                    <th>Time</th>
+                    <th>Call</th>
+                    <th>Put</th>
+
+                    <th>Diff</th>
+                    <th>PCR</th>
+                    <th>Option Signal</th>
+                    <th>VWAP</th>
+                    <th>Price</th>
+                    <th>VWAP Signal</th>
+                </tr>
+
+            </thead>
+
+            <tbody class="">
+                <tr>
+                    <td>1</td>
+                    <td style="color : white ">1045</td>
+                    <td style="color : white ">30775050</td>
+                    <td style="color : white ">17915050</td>
+                    <td style="color :red ">-12860000 </td>
+                    <td style="color : red ">.58</td>
+                    <td style="color :red ">SELL</td>
+                    <td style="color: white ">19307.00</td>
+                    <td style="color : white ">19291</td>
+                    <td style="color:red">SEEL</td>
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <td style="color : white ">1045</td>
+                    <td style="color : white ">30775050</td>
+                    <td style="color : white ">17915050</td>
+                    <td style="color :red ">-12860000 </td>
+                    <td style="color : red ">.58</td>
+                    <td style="color :red ">SELL</td>
+                    <td style="color: white ">19307.00</td>
+                    <td style="color : white ">19291</td>
+                    <td style="color:red">SEEL</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td style="color : white ">1045</td>
+                    <td style="color : white ">30775050</td>
+                    <td style="color : white ">17915050</td>
+                    <td style="color :red ">-12860000 </td>
+                    <td style="color : red ">.58</td>
+                    <td style="color :red ">SELL</td>
+                    <td style="color: white ">19307.00</td>
+                    <td style="color : white ">19291</td>
+                    <td style="color:red">SEEL</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td style="color : white ">1045</td>
+                    <td style="color : white ">30775050</td>
+                    <td style="color : white ">17915050</td>
+                    <td style="color :red ">-12860000 </td>
+                    <td style="color : red ">.58</td>
+                    <td style="color :red ">SELL</td>
+                    <td style="color: white ">19307.00</td>
+                    <td style="color : white ">19291</td>
+                    <td style="color:red">SEEL</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td style="color : white ">1045</td>
+                    <td style="color : white ">30775050</td>
+                    <td style="color : white ">17915050</td>
+                    <td style="color :red ">-12860000 </td>
+                    <td style="color : red ">.58</td>
+                    <td style="color :red ">SELL</td>
+                    <td style="color: white ">19307.00</td>
+                    <td style="color : white ">19291</td>
+                    <td style="color:red">SEEL</td>
+                </tr>
+
+
+            </tbody>
+
+
+
+
+            </tbody>
+        </table>
+    </div>
+
+
+
+
+
+
+
+
 
     {{-- ------------------------------------------------------------------------------------------------------------------------------------------------Expiry Date Function & Strike Price Function --}}
 

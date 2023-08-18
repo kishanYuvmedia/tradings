@@ -16,7 +16,7 @@
                         <div class="card-body">
                             <div class="table-responsive">
                                 <label for="expiry_date" class="lable-expiry-date"><b>Select Expiry:</b></label>
-                                <select style="width: 234px; height: 37px; color: #a37213;background-color:#121419"
+                                <select style="width: 234px; height: 37px; color: #a37213;background-color:#161a20"
                                     id="expiry_date">
                                     <option value="" selected>Options</option>
                                     @foreach ($expArray as $option)
@@ -47,7 +47,7 @@
                             <label for="starting">
                                 <b style="color: #6c7687"> <span style="color:green">START </span>STRIKE PRICE :</b>
                             </label>
-                            <select style="width: 234px; height: 37px; color: #a37213;background-color:#121419"
+                            <select style="width: 234px; height: 37px; color: #a37213;background-color:#161a20"
                                 id="starting">
                                 @foreach ($putArr as $value)
                                     <option value="{{ $value['value'] }}">{{ $value['value'] }}</option>
@@ -59,7 +59,7 @@
                             <label for="ending">
                                 <b style="color: #6c7687"><span style="color:red">END </span> STRIKEPRICE :</b>
                             </label>
-                            <select style="width: 234px; height: 37px; color: #a37213;background-color:#121419"
+                            <select style="width: 234px; height: 37px; color: #a37213;background-color:#161a20"
                                 id="ending">
                                 @foreach ($putArr as $value)
                                     <option value="{{ $value['value'] }}">{{ $value['value'] }}</option>
@@ -89,7 +89,7 @@
                         <!-- Call options table -->
                         <thead>
                             <tr>
-                                <td colspan="6" style=" background-color: #232a34;">
+                                <td colspan="6" style=" background-color: #1b2027;">
                                     <b style="font-size:16px;float:left;color:white"> Calls Option
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15.5"
                                             viewBox="0 0 16 13.5">
@@ -155,7 +155,7 @@
                             <!-- Add a new row to display the total counts for calls -->
 
                             <tr>
-                                <td style="background-color: #121419;">-</td>
+                                <td style="background-color: #161a20;">-</td>
                                 @php
                                     $dataSets = [[$totalCallsOpenInterest, $totalCallsOpenInterestChange, $totalCallsTotalQtyTraded, 'OI'], [$totalCallsOpenInterestChange, $totalCallsOpenInterestChange, $totalCallsTotalQtyTraded, 'CIOI'], [$totalCallsTotalQtyTraded, $totalCallsOpenInterestChange, $totalCallsTotalQtyTraded, 'Traded']];
                                 @endphp
@@ -174,8 +174,8 @@
                                     </td>
                                 @endforeach
 
-                                <td style="background-color: #121419;">-</td>
-                                <td style="background-color: #121419;">-</td>
+                                <td style="background-color: #161a20;">-</td>
+                                <td style="background-color: #161a20;">-</td>
                             </tr>
 
                         </tbody>
@@ -187,7 +187,7 @@
                         <!-- Put options table -->
                         <thead>
                             <tr>
-                                <td colspan="6" style="color: red;background-color: #232a34;">
+                                <td colspan="6" style="color: red;background-color: #1b2027;">
                                     <b style="font-size:16px;float:right;color:white">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="15.5"
                                             viewBox="0 0 16 13.5">
@@ -257,8 +257,8 @@
                             <!-- Add a new row to display the total counts for puts -->
                             <tr>
                                 <td style="background-color:#ffb020;;color: #000000;"><b>-: Total :-</b></td>
-                                <td rowspan="2" style="background-color: #121419">-</td>
-                                <td style="background-color: #121419">-</td>
+                                <td rowspan="2" style="background-color: #161a20">-</td>
+                                <td style="background-color: #161a20">-</td>
 
                                 {{-- CR And L Function  --}}
 
