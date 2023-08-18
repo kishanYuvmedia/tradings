@@ -279,6 +279,7 @@
                                 @endforeach
 
                             </tr>
+
                         </tbody>
                     </table>
 
@@ -339,12 +340,7 @@
 
 
 
-    <div style="
-    margin-bottom: 50px;
-    margin-top: 50px;
-    margin-left: 19px;
-    margin-right: 17px;
-">
+    <div style="margin-bottom: 50px;margin-top: 50px;margin-left: 19px;margin-right: 17px;">
         <table style="margin:auto;width: -webkit-fill-available;text-align: center;">
 
             <thead>
@@ -372,11 +368,23 @@
             </thead>
 
             <tbody class="">
+                <?php
+                foreach ($callArr as $key => $value) {
+                ?>
+
+
+                @php
+                    $dataSets = [[$totalCallsOpenInterestChange, 'CIOI']];
+                @endphp
+                @php
+                    $dataSets = [[$totalPutsOpenInterestChange, 'CIOI']];
+                @endphp
                 <tr>
                     <td>1</td>
-                    <td style="color : white ">1045</td>
-                    <td style="color : white ">30775050</td>
-                    <td style="color : white ">17915050</td>
+                    <td style="color : white ">{{ $value['SERVERTIME'] ?: '-' }}</td>
+                    <td style="color : white ">{{ $totalCallsOpenInterestChange ?: '-' }}</td>
+
+                    <td style="color : white ">{{ $totalPutsOpenInterestChange ?: '-' }}</td>
                     <td style="color :red ">-12860000 </td>
                     <td style="color : red ">.58</td>
                     <td style="color :red ">SELL</td>
@@ -384,10 +392,11 @@
                     <td style="color : white ">19291</td>
                     <td style="color:red">SEEL</td>
                 </tr>
+                <?php } ?>
 
-                <tr>
+                {{-- <tr>
                     <td>2</td>
-                    <td style="color : white ">1045</td>
+                    <td style="color : white ">SERVER TIME</td>
                     <td style="color : white ">30775050</td>
                     <td style="color : white ">17915050</td>
                     <td style="color :red ">-12860000 </td>
@@ -399,7 +408,7 @@
                 </tr>
                 <tr>
                     <td>3</td>
-                    <td style="color : white ">1045</td>
+                    <td style="color : white ">SERVER TIME</td>
                     <td style="color : white ">30775050</td>
                     <td style="color : white ">17915050</td>
                     <td style="color :red ">-12860000 </td>
@@ -411,7 +420,7 @@
                 </tr>
                 <tr>
                     <td>4</td>
-                    <td style="color : white ">1045</td>
+                    <td style="color : white ">SERVER TIME</td>
                     <td style="color : white ">30775050</td>
                     <td style="color : white ">17915050</td>
                     <td style="color :red ">-12860000 </td>
@@ -423,7 +432,7 @@
                 </tr>
                 <tr>
                     <td>5</td>
-                    <td style="color : white ">1045</td>
+                    <td style="color : white ">SERVER TIME</td>
                     <td style="color : white ">30775050</td>
                     <td style="color : white ">17915050</td>
                     <td style="color :red ">-12860000 </td>
@@ -432,7 +441,7 @@
                     <td style="color: white ">19307.00</td>
                     <td style="color : white ">19291</td>
                     <td style="color:red">SEEL</td>
-                </tr>
+                </tr> --}}
 
 
             </tbody>
