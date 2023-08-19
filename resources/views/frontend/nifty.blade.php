@@ -407,63 +407,37 @@
 
 
 
-                    {{-- @php
-                        function calculateTotalBuyPriceAndQtyTraded($callArr, $putArr)
-                        {
-                            $totalBuyPrice = 0;
-                            $totalQtyTraded = 0;
-                        
-                            foreach ($callArr as $key => $callValue) {
-                                $putValue = $putArr[$key] ?? [];
-                        
-                                $totalBuyPrice += ($callValue['BUYPRICE'] ?? 0) + ($putValue['BUYPRICE'] ?? 0);
-                                $totalQtyTraded += ($callValue['TOTALQTYTRADED'] ?? 0) + ($putValue['TOTALQTYTRADED'] ?? 0);
+
+                    <td>
+                        @php
+                            $price = 0;
+                            $volume = 0;
+                            $totalprice = 0;
+                            $volume1 = 0;
+                            $combinedData = array_merge($callArr, $putArr);
+                            $value = 0;
+                            // $identi = explode('_', $result['INSTRUMENTIDENTIFIER']);
+                            // $value = end($identi);
+                            
+                            foreach ($combinedData as $dataPoint) {
+                                $price = explode('_', $dataPoint['INSTRUMENTIDENTIFIER']);
+                                $value = end($price);
+                                $volume += $dataPoint['TOTALQTYTRADED']; // Replace 'volume' with the actual key for volume in your data
+                                $volume1 += $dataPoint['BUYPRICE'] * $dataPoint['TOTALQTYTRADED'];
                             }
-                        
-                            return ['totalBuyPrice' => $totalBuyPrice, 'totalQtyTraded' => $totalQtyTraded];
-                        }
-                        
-                        $results = calculateTotalBuyPriceAndQtyTraded($callArr, $putArr);
-                        $totalBuyPrice = $results['totalBuyPrice'];
-                        $totalQtyTraded = $results['totalQtyTraded'];
-                    @endphp
-
-                    <td>
-                        Total Buy Price: {{ $totalBuyPrice }}, Total Qty Traded: {{ $totalQtyTraded }}
-                    </td> --}}
-
-                    @php
-                        //     function calculateVWAP($callArr, $putArr)
-                        //     {
-                        //         $totalValue = 0;
-                        //         $totalVolume = 0;
-                        
-                        //         foreach ($callArr as $key => $callValue) {
-                        //             $putValue = $putArr[$key] ?? [];
-                        
-                        //             $callBuyPrice = $callValue['BUYPRICE'] ?? 0;
-                        //             $putBuyPrice = $putValue['BUYPRICE'] ?? 0;
-                        
-                        //             $callQtyTraded = $callValue['TOTALQTYTRADED'] ?? 0;
-                        //             $putQtyTraded = $putValue['TOTALQTYTRADED'] ?? 0;
-                        
-                        //             $totalValue += $callBuyPrice * $callQtyTraded + $putBuyPrice * $putQtyTraded;
-                        //             $totalVolume += $callQtyTraded + $putQtyTraded;
-                        //         }
-                        
-                        //         $vwap = $totalVolume !== 0 ? $totalValue / $totalVolume : 0;
-                        //         return $vwap;
-                        //     }
-                        
-                        //     $vwap = calculateVWAP($callArr, $putArr);
-                        //
-                    @endphp
-
-                    <td>
-                        VWAP
+                            if ($volume > 0) {
+                                $vwap = $volume1 / $volume;
+                                $totalprice = $value / count($combinedData); // Calculate average price
+                            
+                                echo $vwap; // Display VWAP with 2 decimal places
+                            } else {
+                                echo '-';
+                            }
+                        @endphp
                     </td>
                     {{-- <td style="color: white ">19307.00</td> --}}
-                    <td style="color : white ">19291</td>
+                    <td style="color : white "><?php echo $totalprice; ?></td>
+
                     <td style="color:red">SELL</td>
                 </tr>
                 <?php } ?>
