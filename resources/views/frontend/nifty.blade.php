@@ -339,24 +339,19 @@
 
 
 
-
     <div style="margin-bottom: 50px;margin-top: 50px;margin-left: 19px;margin-right: 17px;">
         <table style="margin:auto;width: -webkit-fill-available;text-align: center;">
-
             <thead>
                 <tr>
-                    <td colspan="12" style=" background-color: #1b2027;">
-                        <b style="font-size:16px;float:left;color:white"> Intraday Data
-
+                    <td colspan="12" style="background-color: #1b2027;">
+                        <b style="font-size: 16px; float: left; color: white;">Intraday Data</b>
                     </td>
                 </tr>
-
                 <tr style="color: #6c7687">
-                    <th style="color:#ffffff">SR</th>
+                    <th style="color: #ffffff">SR</th>
                     <th>Time</th>
                     <th>Call</th>
                     <th>Put</th>
-
                     <th>Diff</th>
                     <th>PCR</th>
                     <th>Option Signal</th>
@@ -364,89 +359,114 @@
                     <th>Price</th>
                     <th>VWAP Signal</th>
                 </tr>
-
             </thead>
-
             <tbody class="">
+
                 <?php
-                foreach ($callArr as $key => $value) {
+                    foreach ($callArr as $callKey => $callValue) {
+                    $putValue = $putArr[$callKey] ?? null; // Get corresponding value from the put array if it exists
                 ?>
 
+                @php $dataSets = [[$totalCallsOpenInterestChange, 'CIOI']];  @endphp
+                @php $dataSets = [[$totalPutsOpenInterestChange, 'CIOI']]; @endphp
 
-                @php
-                    $dataSets = [[$totalCallsOpenInterestChange, 'CIOI']];
-                @endphp
-                @php
-                    $dataSets = [[$totalPutsOpenInterestChange, 'CIOI']];
-                @endphp
-                <tr>
-                    <td>1</td>
-                    <td style="color : white ">{{ $value['SERVERTIME'] ?: '-' }}</td>
+                <tr style="color : white ">
+                    <td>{{ $key + 1 }}</td>
+                    <td>
+                        @php
+                            $timestamp = !empty($value['SERVERTIME']) ? $value['SERVERTIME'] / 1000 : null;
+                            echo $timestamp ? \Carbon\Carbon::createFromTimestamp($timestamp)->format('H:i') : '-';
+                        @endphp
+                    </td>
                     <td style="color : white ">{{ $totalCallsOpenInterestChange ?: '-' }}</td>
-
                     <td style="color : white ">{{ $totalPutsOpenInterestChange ?: '-' }}</td>
-                    <td style="color :red ">-12860000 </td>
-                    <td style="color : red ">.58</td>
-                    <td style="color :red ">SELL</td>
-                    <td style="color: white ">19307.00</td>
+
+                    <td>
+                        @php
+                            $difference = ($totalPutsOpenInterestChange ?? 0) - ($totalCallsOpenInterestChange ?? 0);
+                            $color = $difference >= 0 ? 'green' : 'red';
+                            echo '<span style="color: ' . $color . '">' . $difference . '</span>';
+                        @endphp
+                    </td>
+
+                    <td>
+                        @php
+                            $pcrValue = $totalPutsOpenInterestChange / $totalCallsOpenInterestChange;
+                            $color = $pcrValue >= 1 ? 'green' : 'red';
+                            echo '<span style="color: ' . $color . '">' . number_format($pcrValue, 2) . '</span>';
+                        @endphp
+                    </td>
+
+
+                    <td>
+                        @php
+                            $color = $pcrValue >= 1 ? 'green' : 'red';
+                            echo '<p style="color:' . $color . '">' . ($pcrValue >= 1 ? 'BUY' : 'SELL') . '</p>';
+                        @endphp
+                    </td>
+
+
+
+                    {{-- @php
+                        function calculateTotalBuyPriceAndQtyTraded($callArr, $putArr)
+                        {
+                            $totalBuyPrice = 0;
+                            $totalQtyTraded = 0;
+                        
+                            foreach ($callArr as $key => $callValue) {
+                                $putValue = $putArr[$key] ?? [];
+                        
+                                $totalBuyPrice += ($callValue['BUYPRICE'] ?? 0) + ($putValue['BUYPRICE'] ?? 0);
+                                $totalQtyTraded += ($callValue['TOTALQTYTRADED'] ?? 0) + ($putValue['TOTALQTYTRADED'] ?? 0);
+                            }
+                        
+                            return ['totalBuyPrice' => $totalBuyPrice, 'totalQtyTraded' => $totalQtyTraded];
+                        }
+                        
+                        $results = calculateTotalBuyPriceAndQtyTraded($callArr, $putArr);
+                        $totalBuyPrice = $results['totalBuyPrice'];
+                        $totalQtyTraded = $results['totalQtyTraded'];
+                    @endphp
+
+                    <td>
+                        Total Buy Price: {{ $totalBuyPrice }}, Total Qty Traded: {{ $totalQtyTraded }}
+                    </td> --}}
+
+                    @php
+                        //     function calculateVWAP($callArr, $putArr)
+                        //     {
+                        //         $totalValue = 0;
+                        //         $totalVolume = 0;
+                        
+                        //         foreach ($callArr as $key => $callValue) {
+                        //             $putValue = $putArr[$key] ?? [];
+                        
+                        //             $callBuyPrice = $callValue['BUYPRICE'] ?? 0;
+                        //             $putBuyPrice = $putValue['BUYPRICE'] ?? 0;
+                        
+                        //             $callQtyTraded = $callValue['TOTALQTYTRADED'] ?? 0;
+                        //             $putQtyTraded = $putValue['TOTALQTYTRADED'] ?? 0;
+                        
+                        //             $totalValue += $callBuyPrice * $callQtyTraded + $putBuyPrice * $putQtyTraded;
+                        //             $totalVolume += $callQtyTraded + $putQtyTraded;
+                        //         }
+                        
+                        //         $vwap = $totalVolume !== 0 ? $totalValue / $totalVolume : 0;
+                        //         return $vwap;
+                        //     }
+                        
+                        //     $vwap = calculateVWAP($callArr, $putArr);
+                        //
+                    @endphp
+
+                    <td>
+                        VWAP
+                    </td>
+                    {{-- <td style="color: white ">19307.00</td> --}}
                     <td style="color : white ">19291</td>
-                    <td style="color:red">SEEL</td>
+                    <td style="color:red">SELL</td>
                 </tr>
                 <?php } ?>
-
-                {{-- <tr>
-                    <td>2</td>
-                    <td style="color : white ">SERVER TIME</td>
-                    <td style="color : white ">30775050</td>
-                    <td style="color : white ">17915050</td>
-                    <td style="color :red ">-12860000 </td>
-                    <td style="color : red ">.58</td>
-                    <td style="color :red ">SELL</td>
-                    <td style="color: white ">19307.00</td>
-                    <td style="color : white ">19291</td>
-                    <td style="color:red">SEEL</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td style="color : white ">SERVER TIME</td>
-                    <td style="color : white ">30775050</td>
-                    <td style="color : white ">17915050</td>
-                    <td style="color :red ">-12860000 </td>
-                    <td style="color : red ">.58</td>
-                    <td style="color :red ">SELL</td>
-                    <td style="color: white ">19307.00</td>
-                    <td style="color : white ">19291</td>
-                    <td style="color:red">SEEL</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td style="color : white ">SERVER TIME</td>
-                    <td style="color : white ">30775050</td>
-                    <td style="color : white ">17915050</td>
-                    <td style="color :red ">-12860000 </td>
-                    <td style="color : red ">.58</td>
-                    <td style="color :red ">SELL</td>
-                    <td style="color: white ">19307.00</td>
-                    <td style="color : white ">19291</td>
-                    <td style="color:red">SEEL</td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td style="color : white ">SERVER TIME</td>
-                    <td style="color : white ">30775050</td>
-                    <td style="color : white ">17915050</td>
-                    <td style="color :red ">-12860000 </td>
-                    <td style="color : red ">.58</td>
-                    <td style="color :red ">SELL</td>
-                    <td style="color: white ">19307.00</td>
-                    <td style="color : white ">19291</td>
-                    <td style="color:red">SEEL</td>
-                </tr> --}}
-
-
-            </tbody>
-
-
 
 
             </tbody>
