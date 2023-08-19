@@ -279,6 +279,7 @@
                                 @endforeach
 
                             </tr>
+
                         </tbody>
                     </table>
 
@@ -338,29 +339,19 @@
 
 
 
-
-    <div style="
-    margin-bottom: 50px;
-    margin-top: 50px;
-    margin-left: 19px;
-    margin-right: 17px;
-">
+    <div style="margin-bottom: 50px;margin-top: 50px;margin-left: 19px;margin-right: 17px;">
         <table style="margin:auto;width: -webkit-fill-available;text-align: center;">
-
             <thead>
                 <tr>
-                    <td colspan="12" style=" background-color: #1b2027;">
-                        <b style="font-size:16px;float:left;color:white"> Intraday Data
-
+                    <td colspan="12" style="background-color: #1b2027;">
+                        <b style="font-size: 16px; float: left; color: white;">Intraday Data</b>
                     </td>
                 </tr>
-
                 <tr style="color: #6c7687">
-                    <th style="color:#ffffff">SR</th>
+                    <th style="color: #ffffff">SR</th>
                     <th>Time</th>
                     <th>Call</th>
                     <th>Put</th>
-
                     <th>Diff</th>
                     <th>PCR</th>
                     <th>Option Signal</th>
@@ -368,76 +359,88 @@
                     <th>Price</th>
                     <th>VWAP Signal</th>
                 </tr>
-
             </thead>
-
             <tbody class="">
-                <tr>
-                    <td>1</td>
-                    <td style="color : white ">1045</td>
-                    <td style="color : white ">30775050</td>
-                    <td style="color : white ">17915050</td>
-                    <td style="color :red ">-12860000 </td>
-                    <td style="color : red ">.58</td>
-                    <td style="color :red ">SELL</td>
-                    <td style="color: white ">19307.00</td>
-                    <td style="color : white ">19291</td>
-                    <td style="color:red">SEEL</td>
-                </tr>
 
-                <tr>
-                    <td>2</td>
-                    <td style="color : white ">1045</td>
-                    <td style="color : white ">30775050</td>
-                    <td style="color : white ">17915050</td>
-                    <td style="color :red ">-12860000 </td>
-                    <td style="color : red ">.58</td>
-                    <td style="color :red ">SELL</td>
-                    <td style="color: white ">19307.00</td>
-                    <td style="color : white ">19291</td>
-                    <td style="color:red">SEEL</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td style="color : white ">1045</td>
-                    <td style="color : white ">30775050</td>
-                    <td style="color : white ">17915050</td>
-                    <td style="color :red ">-12860000 </td>
-                    <td style="color : red ">.58</td>
-                    <td style="color :red ">SELL</td>
-                    <td style="color: white ">19307.00</td>
-                    <td style="color : white ">19291</td>
-                    <td style="color:red">SEEL</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td style="color : white ">1045</td>
-                    <td style="color : white ">30775050</td>
-                    <td style="color : white ">17915050</td>
-                    <td style="color :red ">-12860000 </td>
-                    <td style="color : red ">.58</td>
-                    <td style="color :red ">SELL</td>
-                    <td style="color: white ">19307.00</td>
-                    <td style="color : white ">19291</td>
-                    <td style="color:red">SEEL</td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td style="color : white ">1045</td>
-                    <td style="color : white ">30775050</td>
-                    <td style="color : white ">17915050</td>
-                    <td style="color :red ">-12860000 </td>
-                    <td style="color : red ">.58</td>
-                    <td style="color :red ">SELL</td>
-                    <td style="color: white ">19307.00</td>
-                    <td style="color : white ">19291</td>
-                    <td style="color:red">SEEL</td>
-                </tr>
+                <?php
+                    foreach ($callArr as $callKey => $callValue) {
+                    $putValue = $putArr[$callKey] ?? null; // Get corresponding value from the put array if it exists
+                ?>
+
+                @php $dataSets = [[$totalCallsOpenInterestChange, 'CIOI']];  @endphp
+                @php $dataSets = [[$totalPutsOpenInterestChange, 'CIOI']]; @endphp
+
+                <tr style="color : white ">
+                    <td>{{ $key + 1 }}</td>
+                    <td>
+                        @php
+                            $timestamp = !empty($value['SERVERTIME']) ? $value['SERVERTIME'] / 1000 : null;
+                            echo $timestamp ? \Carbon\Carbon::createFromTimestamp($timestamp)->format('H:i') : '-';
+                        @endphp
+                    </td>
+                    <td style="color : white ">{{ $totalCallsOpenInterestChange ?: '-' }}</td>
+                    <td style="color : white ">{{ $totalPutsOpenInterestChange ?: '-' }}</td>
+
+                    <td>
+                        @php
+                            $difference = ($totalPutsOpenInterestChange ?? 0) - ($totalCallsOpenInterestChange ?? 0);
+                            $color = $difference >= 0 ? 'green' : 'red';
+                            echo '<span style="color: ' . $color . '">' . $difference . '</span>';
+                        @endphp
+                    </td>
+
+                    <td>
+                        @php
+                            $pcrValue = $totalPutsOpenInterestChange / $totalCallsOpenInterestChange;
+                            $color = $pcrValue >= 1 ? 'green' : 'red';
+                            echo '<span style="color: ' . $color . '">' . number_format($pcrValue, 2) . '</span>';
+                        @endphp
+                    </td>
 
 
-            </tbody>
+                    <td>
+                        @php
+                            $color = $pcrValue >= 1 ? 'green' : 'red';
+                            echo '<p style="color:' . $color . '">' . ($pcrValue >= 1 ? 'BUY' : 'SELL') . '</p>';
+                        @endphp
+                    </td>
 
 
+
+
+                    <td>
+                        @php
+                            $price = 0;
+                            $volume = 0;
+                            $totalprice = 0;
+                            $volume1 = 0;
+                            $combinedData = array_merge($callArr, $putArr);
+                            $value = 0;
+                            // $identi = explode('_', $result['INSTRUMENTIDENTIFIER']);
+                            // $value = end($identi);
+                            
+                            foreach ($combinedData as $dataPoint) {
+                                $price = explode('_', $dataPoint['INSTRUMENTIDENTIFIER']);
+                                $value = end($price);
+                                $volume += $dataPoint['TOTALQTYTRADED']; // Replace 'volume' with the actual key for volume in your data
+                                $volume1 += $dataPoint['BUYPRICE'] * $dataPoint['TOTALQTYTRADED'];
+                            }
+                            if ($volume > 0) {
+                                $vwap = $volume1 / $volume;
+                                $totalprice = $value / count($combinedData); // Calculate average price
+                            
+                                echo $vwap; // Display VWAP with 2 decimal places
+                            } else {
+                                echo '-';
+                            }
+                        @endphp
+                    </td>
+                    {{-- <td style="color: white ">19307.00</td> --}}
+                    <td style="color : white "><?php echo $totalprice; ?></td>
+
+                    <td style="color:red">SELL</td>
+                </tr>
+                <?php } ?>
 
 
             </tbody>
