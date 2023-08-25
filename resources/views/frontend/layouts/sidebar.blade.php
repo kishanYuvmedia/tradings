@@ -59,22 +59,22 @@
                     </a>
                     <ul>
                         <li class="treeview">
-                            <a href="{{ URL::to('nifty') }}">
+                            <a href="{{ URL::to('derivatives/NIFTY') }}">
                                 <i class="metismenu-icon"></i><span>NIFTY</span>
                             </a>
                         </li>
                         <li class="treeview">
-                            <a href="{{ URL::to('banknifty') }}">
+                            <a href="{{ URL::to('derivatives/BANKNIFTY') }}">
                                 <i class="metismenu-icon"></i><span>BANKNIFTY</span>
                             </a>
                         </li>
                         <li class="treeview">
-                            <a href="{{ URL::to('finnifty') }}">
+                            <a href="{{ URL::to('derivatives/FINNIFTY') }}">
                                 <i class="metismenu-icon"></i><span>FINNIFTY</span>
                             </a>
                         </li>
                         <li class="treeview">
-                            <a href="{{ URL::to('midcap') }}">
+                            <a href="{{ URL::to('derivatives/MIDCPNIFTY') }}">
                                 <i class="metismenu-icon"></i><span>MIDCAP</span>
                             </a>
                         </li>

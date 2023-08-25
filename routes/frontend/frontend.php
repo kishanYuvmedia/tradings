@@ -16,4 +16,5 @@ Route::get('/get-finniftywithDt/{id}', 'HomeController@getFinNiftywithDt');
 Route::get('/get-bankniftywithDt/{id}', 'HomeController@getBankNiftywithDt');
 Route::get('/get-niftywithDt/{id}', 'HomeController@getNiftywithDt');
 Route::get('/get-midcapwithDt/{id}', 'HomeController@getMidcapwithDt');
+Route::get('/derivatives/{type}', 'HomeController@Getdata');
 
