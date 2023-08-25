@@ -125,6 +125,7 @@
                         @endforeach
                         <tr style="color: #ffb020">
 
+                            {{-- CR And L Function  --}}
 
                             @php
                                 function displayFormattedNumber($number)
@@ -137,28 +138,15 @@
                                         return number_format($number, 2);
                                     }
                                 }
-                                
                             @endphp
 
-
                             <th></th>
-
                             <th>{{ displayFormattedNumber($totalcallOpenInterest) }}</th>
                             <th>{{ displayFormattedNumber($totalcallOpenInterestChange) }}</th>
                             <th>{{ displayFormattedNumber($totalcallTotalQtyTraded) }}</th>
-
                             <th></th>
                             <th></th>
-
                             <th style="color:rgb(0, 0, 0);background-color:#ffb020">Total</th>
-
-
-                            {{-- CR And L Function  --}}
-
-
-
-
-
                             <th></th>
                             <th></th>
                             <th>{{ displayFormattedNumber($totalPutsOpenInterest) }}</th>
@@ -200,29 +188,36 @@
                 {{-- @foreach ($currentNftDataresult as $index => $item) --}}
                 <tr style="color: #dfdfdf">
                     <td style="color: #ffffff">1</td>
-                    <td> @php
-                        $timestamp = !empty($currentNftDataresult['SERVERTIME']) ? $currentNftDataresult['SERVERTIME'] / 1000 : null;
-                        echo $timestamp ? \Carbon\Carbon::createFromTimestamp($timestamp)->format('H:i') : '-';
-                    @endphp
+                    <td>
+                        @php
+                            $timestamp = !empty($currentNftDataresult['SERVERTIME']) ? $currentNftDataresult['SERVERTIME'] / 1000 : null;
+                            echo $timestamp ? \Carbon\Carbon::createFromTimestamp($timestamp)->format('H:i') : '-';
+                        @endphp
                     </td>
                     <td>{{ $totalcallOpenInterestChange }}</td>
                     <td>{{ $totalPutsOpenInterestChange }}</td>
                     <td>{{ $totalcallOpenInterestChange - $totalPutsOpenInterestChange }}</td>
-                    <td> @php
-                        $pcrValue = $totalPutsOpenInterestChange / $totalcallOpenInterestChange;
-                        $color = $pcrValue >= 1 ? 'green' : 'red';
-                        echo '<span style="color: ' . $color . '">' . number_format($pcrValue, 2) . '</span>';
-                    @endphp</td>
-                    <td> @php
-                        $color = $pcrValue >= 1 ? 'green' : 'red';
-                        echo '<p style="color:' . $color . '">' . ($pcrValue >= 1 ? 'BUY' : 'SELL') . '</p>';
-                    @endphp</td>
+                    <td>
+                        @php
+                            $pcrValue = $totalPutsOpenInterestChange / $totalcallOpenInterestChange;
+                            $color = $pcrValue >= 1 ? 'green' : 'red';
+                            echo '<span style="color: ' . $color . '">' . number_format($pcrValue, 2) . '</span>';
+                        @endphp
+                    </td>
+                    <td>
+                        @php
+                            $color = $pcrValue >= 1 ? 'green' : 'red';
+                            echo '<p style="color:' . $color . '">' . ($pcrValue >= 1 ? 'BUY' : 'SELL') . '</p>';
+                        @endphp
+                    </td>
                     <td>{{ $currentNftDataresult['AVERAGETRADEDPRICE'] }}</td>
                     <td>{{ $currentNftDataresult['BUYPRICE'] }}</td>
-                    <td>@php
-                        $color = $pcrValue >= 1 ? 'green' : 'red';
-                        echo '<p style="color:' . $color . '">' . ($pcrValue >= 1 ? 'BUY' : 'SELL') . '</p>';
-                    @endphp</td>
+                    <td>
+                        @php
+                            $color = $pcrValue >= 1 ? 'green' : 'red';
+                            echo '<p style="color:' . $color . '">' . ($pcrValue >= 1 ? 'BUY' : 'SELL') . '</p>';
+                        @endphp
+                    </td>
                 </tr>
                 {{-- @endforeach --}}
             </thead>
@@ -280,4 +275,13 @@
             };
         }
     </script>
+
+
+
+    {{-- page reload --}}
+    {{-- <script>
+        setTimeout(function() {
+            location.reload();
+        }, 3000); // 300000 milliseconds = 5 minutes
+    </script> --}}
 @endsection
