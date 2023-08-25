@@ -53,29 +53,39 @@
                         </tr>
                     </thead>
                     <tbody>
+                        @php
+                            $totalPutsOpenInterest = 0;
+                            $totalPutsOpenInterestChange = 0;
+                            $totalPutsTotalQtyTraded = 0;
+                            $totalcallOpenInterest = 0;
+                            $totalcallOpenInterestChange = 0;
+                            $totalcallTotalQtyTraded = 0;
+                            
+                        @endphp
+
                         @foreach ($dataList as $index => $item)
-                            <tr style="color: #6c7687">
+                            <tr style="color:#ffffff">
                                 <td style="color:#ffffff">{{ $index + 1 }}
                                     <?php
-                                    $totalPutsOpenInterest = 0;
-                                    $totalPutsOpenInterestChange = 0;
-                                    $totalPutsTotalQtyTraded = 0;
-                                    $totalcallOpenInterest = 0;
-                                    $totalcallOpenInterestChange = 0;
-                                    $totalcallTotalQtyTraded = 0;
                                     
-                                    foreach ($item as $key => $value) {
-                                        $totalPutsOpenInterest += $item['put']['OPENINTEREST'];
-                                        $totalPutsOpenInterestChange += $item['put']['OPENINTERESTCHANGE'];
-                                        $totalPutsTotalQtyTraded += $item['put']['TOTALQTYTRADED'];
-                                        $totalcallOpenInterest += $item['call']['OPENINTEREST'];
-                                        $totalcallOpenInterestChange += $item['call']['OPENINTERESTCHANGE'];
-                                        $totalcallTotalQtyTraded += $item['call']['TOTALQTYTRADED'];
-                                    }
+                                    $totalPutsOpenInterest += $item['put']['OPENINTEREST'];
+                                    $totalPutsOpenInterestChange += $item['put']['OPENINTERESTCHANGE'];
+                                    $totalPutsTotalQtyTraded += $item['put']['TOTALQTYTRADED'];
+                                    $totalcallOpenInterest += $item['call']['OPENINTEREST'];
+                                    $totalcallOpenInterestChange += $item['call']['OPENINTERESTCHANGE'];
+                                    $totalcallTotalQtyTraded += $item['call']['TOTALQTYTRADED'];
+                                    
                                     ?>
                                 </td>
                                 <td>{{ $item['call']['OPENINTEREST'] }}</td>
-                                <td>{{ $item['call']['OPENINTERESTCHANGE'] }}</td>
+
+                                <td style="color: {{ $item['call']['OPENINTERESTCHANGE'] >= 0 ? '#0edb61' : '#ff4c4c' }}">
+                                    {{ $item['call']['OPENINTERESTCHANGE'] }}
+                                </td>
+
+
+
+
                                 <td>{{ $item['call']['TOTALQTYTRADED'] }}</td>
                                 <td>
                                     @php
@@ -87,41 +97,66 @@
                                     {{ $roundedPercentage == 0 ? '-' : $roundedPercentage . '%' }}
                                 </td>
                                 <td>{{ $item['call']['LASTTRADEPRICE'] }}</td>
+
                                 <td
                                     style="{{ $item['call']['value'] == $item['strike'] ? 'color:rgb(0, 0, 0);background-color:#ffb020' : 'background-color:#22272f' }}">
-                                    {{ $item['call']['value'] }}</td>
-
+                                    {{ $item['call']['value'] }}
+                                </td>
 
                                 <td>{{ $item['put']['LASTTRADEPRICE'] }}</td>
-                                <td> @php
-                                    $new_OI = $item['put']['OPENINTEREST'];
-                                    $change_in_OI = $item['put']['OPENINTERESTCHANGE'];
-                                    $old_OI = $new_OI - $change_in_OI;
-                                    $roundedPercentage = $old_OI == 0 ? 0 : ceil(($change_in_OI / $old_OI) * 100);
-                                @endphp
-                                    {{ $roundedPercentage == 0 ? '-' : $roundedPercentage . '%' }}</td>
+                                <td>
+                                    @php
+                                        $new_OI = $item['put']['OPENINTEREST'];
+                                        $change_in_OI = $item['put']['OPENINTERESTCHANGE'];
+                                        $old_OI = $new_OI - $change_in_OI;
+                                        $roundedPercentage = $old_OI == 0 ? 0 : ceil(($change_in_OI / $old_OI) * 100);
+                                    @endphp
+                                    {{ $roundedPercentage == 0 ? '-' : $roundedPercentage . '%' }}
+                                </td>
                                 <td>{{ $item['put']['TOTALQTYTRADED'] }}</td>
-                                <td>{{ $item['put']['OPENINTERESTCHANGE'] }}</td>
+
+
+                                <td style="color: {{ $item['put']['OPENINTERESTCHANGE'] >= 0 ? '#0edb61' : '#ff4c4c' }}">
+                                    {{ $item['put']['OPENINTERESTCHANGE'] }}
+                                </td>
+
                                 <td>{{ $item['put']['OPENINTEREST'] }}</td>
                             </tr>
                         @endforeach
-                        <tr style="color: #6c7687">
-                            <th></th>
-                            <th>{{ $totalPutsOpenInterest }}</th>
-                            <th>{{ $totalPutsOpenInterestChange }}</th>
-                            <th>{{ $totalPutsTotalQtyTraded }}</th>
-                            <th></th>
-                            <th></th>
+                        <tr style="color: #ffb020">
 
-                            <th style="color:rgb(0, 0, 0);background-color:#ffb020">STRIKE PRICE</th>
+                            {{-- CR And L Function  --}}
+
+                            @php
+                                function displayFormattedNumber($number)
+                                {
+                                    if ($number >= 10000000) {
+                                        return number_format($number / 10000000, 2) . ' CR';
+                                    } elseif ($number >= 100000) {
+                                        return number_format($number / 100000, 2) . ' L';
+                                    } else {
+                                        return number_format($number, 2);
+                                    }
+                                }
+                            @endphp
+
+                            <th></th>
+                            <th>{{ displayFormattedNumber($totalcallOpenInterest) }}</th>
+                            <th>{{ displayFormattedNumber($totalcallOpenInterestChange) }}</th>
+                            <th>{{ displayFormattedNumber($totalcallTotalQtyTraded) }}</th>
                             <th></th>
                             <th></th>
-                            <th>{{ $totalcallTotalQtyTraded }}</th>
-                            <th>{{ $totalcallOpenInterestChange }}</th>
-                            <th>{{ $totalcallOpenInterest }}</th>
+                            <th style="color:rgb(0, 0, 0);background-color:#ffb020">Total</th>
+                            <th></th>
+                            <th></th>
+                            <th>{{ displayFormattedNumber($totalPutsOpenInterest) }}</th>
+                            <th>{{ displayFormattedNumber($totalPutsOpenInterestChange) }}</th>
+                            <th>{{ displayFormattedNumber($totalPutsTotalQtyTraded) }}</th>
+
                         </tr>
                     </tbody>
                 </table>
+
 
 
             </div>
@@ -153,38 +188,47 @@
                 {{-- @foreach ($currentNftDataresult as $index => $item) --}}
                 <tr style="color: #dfdfdf">
                     <td style="color: #ffffff">1</td>
-                    <td> @php
-                        $timestamp = !empty($currentNftDataresult['SERVERTIME']) ? $currentNftDataresult['SERVERTIME'] / 1000 : null;
-                        echo $timestamp ? \Carbon\Carbon::createFromTimestamp($timestamp)->format('H:i') : '-';
-                    @endphp
+                    <td>
+                        @php
+                            $timestamp = !empty($currentNftDataresult['SERVERTIME']) ? $currentNftDataresult['SERVERTIME'] / 1000 : null;
+                            echo $timestamp ? \Carbon\Carbon::createFromTimestamp($timestamp)->format('H:i') : '-';
+                        @endphp
                     </td>
                     <td>{{ $totalcallOpenInterestChange }}</td>
                     <td>{{ $totalPutsOpenInterestChange }}</td>
                     <td>{{ $totalcallOpenInterestChange - $totalPutsOpenInterestChange }}</td>
-                    <td> @php
-                        $pcrValue = $totalPutsOpenInterestChange / $totalcallOpenInterestChange;
-                        $color = $pcrValue >= 1 ? 'green' : 'red';
-                        echo '<span style="color: ' . $color . '">' . number_format($pcrValue, 2) . '</span>';
-                    @endphp</td>
-                    <td> @php
-                        $color = $pcrValue >= 1 ? 'green' : 'red';
-                        echo '<p style="color:' . $color . '">' . ($pcrValue >= 1 ? 'BUY' : 'SELL') . '</p>';
-                    @endphp</td>
+                    <td>
+                        @php
+                            $pcrValue = $totalPutsOpenInterestChange / $totalcallOpenInterestChange;
+                            $color = $pcrValue >= 1 ? 'green' : 'red';
+                            echo '<span style="color: ' . $color . '">' . number_format($pcrValue, 2) . '</span>';
+                        @endphp
+                    </td>
+                    <td>
+                        @php
+                            $color = $pcrValue >= 1 ? 'green' : 'red';
+                            echo '<p style="color:' . $color . '">' . ($pcrValue >= 1 ? 'BUY' : 'SELL') . '</p>';
+                        @endphp
+                    </td>
                     <td>{{ $currentNftDataresult['AVERAGETRADEDPRICE'] }}</td>
                     <td>{{ $currentNftDataresult['BUYPRICE'] }}</td>
-                    <td>@php
-                        $color = $pcrValue >= 1 ? 'green' : 'red';
-                        echo '<p style="color:' . $color . '">' . ($pcrValue >= 1 ? 'BUY' : 'SELL') . '</p>';
-                    @endphp</td>
+                    <td>
+                        @php
+                            $color = $pcrValue >= 1 ? 'green' : 'red';
+                            echo '<p style="color:' . $color . '">' . ($pcrValue >= 1 ? 'BUY' : 'SELL') . '</p>';
+                        @endphp
+                    </td>
                 </tr>
                 {{-- @endforeach --}}
             </thead>
         </table>
+
+
+
     </div>
     <script>
         // Calculate PCR and PCR strength
-        let PCRData = calculatePCRStrength2({{ $totalcallOpenInterest }},
-            {{ $totalPutsOpenInterest }});
+        let PCRData = calculatePCRStrength2({{ $totalcallOpenInterest }}, {{ $totalPutsOpenInterest }});
         var PCR = PCRData['PCR'].toFixed(2);
         let PCRStrength = PCRData['PCRStrength'];
 
@@ -231,4 +275,13 @@
             };
         }
     </script>
+
+
+
+    {{-- page reload --}}
+    {{-- <script>
+        setTimeout(function() {
+            location.reload();
+        }, 3000); // 300000 milliseconds = 5 minutes
+    </script> --}}
 @endsection
