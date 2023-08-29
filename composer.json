@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.3.0",
         "barryvdh/laravel-debugbar": "^3.7",
+        "beyondcode/laravel-websockets": "^1.14",
         "cboden/ratchet": "^0.4.4",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",

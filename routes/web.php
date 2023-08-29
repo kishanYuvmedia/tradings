@@ -37,6 +37,7 @@ Route::prefix('user_login')->group(function () {
     Route::post('login', 'Auth\User\LoginController@loginUser')->name('user.auth.loginUser');
     Route::post('logout', 'Auth\User\LoginController@logout')->name('user.auth.logout');
     Route::get('logout', 'Auth\User\LoginController@logout');
+    
 });
 
 // User Dashborad

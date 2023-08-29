@@ -43,7 +43,6 @@
                             <th>TOTALQTYTRADED<br> (Volume)</th>
                             <th>PRICECHANGE%</th>
                             <th>LASTTRADEPRICE</th>
-
                             <th style="color:rgb(0, 0, 0);background-color:#ffb020">STRIKE PRICE</th>
                             <th>LASTTRADEPRICE</th>
                             <th>PRICECHANGE%</th>
@@ -60,21 +59,17 @@
                             $totalcallOpenInterest = 0;
                             $totalcallOpenInterestChange = 0;
                             $totalcallTotalQtyTraded = 0;
-                            
                         @endphp
-
                         @foreach ($dataList as $index => $item)
                             <tr style="color:#ffffff">
                                 <td style="color:#ffffff">{{ $index + 1 }}
                                     <?php
-                                    
                                     $totalPutsOpenInterest += $item['put']['OPENINTEREST'];
                                     $totalPutsOpenInterestChange += $item['put']['OPENINTERESTCHANGE'];
                                     $totalPutsTotalQtyTraded += $item['put']['TOTALQTYTRADED'];
                                     $totalcallOpenInterest += $item['call']['OPENINTEREST'];
                                     $totalcallOpenInterestChange += $item['call']['OPENINTERESTCHANGE'];
                                     $totalcallTotalQtyTraded += $item['call']['TOTALQTYTRADED'];
-                                    
                                     ?>
                                 </td>
                                 <td>{{ $item['call']['OPENINTEREST'] }}</td>
@@ -82,10 +77,6 @@
                                 <td style="color: {{ $item['call']['OPENINTERESTCHANGE'] >= 0 ? '#0edb61' : '#ff4c4c' }}">
                                     {{ $item['call']['OPENINTERESTCHANGE'] }}
                                 </td>
-
-
-
-
                                 <td>{{ $item['call']['TOTALQTYTRADED'] }}</td>
                                 <td>
                                     @php
@@ -131,11 +122,11 @@
                                 function displayFormattedNumber($number)
                                 {
                                     if ($number >= 10000000) {
-                                        return number_format($number / 10000000, 2) . ' CR';
+                                        return $number . ' CR';
                                     } elseif ($number >= 100000) {
-                                        return number_format($number / 100000, 2) . ' L';
+                                        return $number . ' L';
                                     } else {
-                                        return number_format($number, 2);
+                                        return $number;
                                     }
                                 }
                             @endphp
@@ -222,8 +213,33 @@
                 {{-- @endforeach --}}
             </thead>
         </table>
+        <hr />
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card" style="box-shadow: rgba(203, 203, 203, 0.98) 0px 0px 0px .5px;border-radius:10px;">
+                    <div class="card-header"
+                        style="background:#1b2027;border-top-left-radius:10px;border-top-right-radius:10px; color:#ffffff;border-bottom: .5px solid #ededed;">
+                        Nifty Intraday Trend
+                    </div>
+                    <div class="card-body">
+                        <canvas id="openInterestChart" style="max-height: 350px"></canvas>
+                    </div>
+                </div>
 
+            </div>
+            <div class="col-md-6">
+                <div class="card" style="box-shadow: rgba(203, 203, 203, 0.98) 0px 0px 0px .5px;border-radius:10px;">
+                    <div class="card-header"
+                        style="background:#1b2027;border-top-left-radius:10px;border-top-right-radius:10px; color:#ffffff;border-bottom: .5px solid #ededed;">
+                        Bank Nifty Intraday Trend
+                    </div>
+                    <div class="card-body">
+                        <canvas id="openInterestCharttwo" style="max-height: 350px"></canvas>
+                    </div>
+                </div>
 
+            </div>
+        </div>
 
     </div>
     <script>
@@ -276,12 +292,141 @@
         }
     </script>
 
-
-
-    {{-- page reload --}}
-    {{-- <script>
-        setTimeout(function() {
-            location.reload();
-        }, 3000); // 300000 milliseconds = 5 minutes
-    </script> --}}
+    <script>
+        const ctx = document.getElementById('openInterestChart').getContext('2d');
+        let openInterestChart;
+        async function fetchChartData() {
+            const response = await fetch('/open-interest-chart-data');
+            const data = await response.json();
+            if (openInterestChart) {
+                openInterestChart.destroy(); // Clear existing chart
+            }
+            // Calculate the desired maximum step size
+            const maxStepSize = 5; // Set your desired maximum step size
+            // Calculate the data range (difference between max and min values)
+            const dataMin = Math.min(...data.data); // Replace with your actual data array
+            const dataMax = Math.max(...data.data); // Replace with your actual data array
+            const dataRange = dataMax - dataMin;
+            // Calculate the interval based on maxStepSize and dataRange
+            const interval = Math.ceil(dataRange / maxStepSize);
+            openInterestChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                            label: 'Option Data',
+                            data: data.data,
+                            borderColor: '#02fa40',
+                            borderWidth: 3,
+                        },
+                        {
+                            label: 'Zero Line',
+                            data: data.zero,
+                            borderColor: '#de3023',
+                            borderWidth: 3,
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'category',
+                            labels: data.labels,
+                            ticks: {
+                                color: 'white' // Change x-axis labels color
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                min: dataMin, // Minimum value for y-axis
+                                max: dataMax, // Maximum value for y-axis
+                                stepSize: interval, // Interval between ticks,
+                                color: 'white', // Change x-axis labels color
+                                callback: function(value, index, values) {
+                                    return '$' + value.toFixed(2); // Format y-axis tick labels
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    theme: 'dark'
+                }
+            });
+        }
+        fetchChartData();
+    </script>
+    <script>
+        const ctx1 = document.getElementById('openInterestCharttwo').getContext('2d');
+        let openInterestChart1;
+        async function fetchChartDatatwo() {
+            const response1 = await fetch('/open-interest-chart-data-two');
+            const data1 = await response1.json();
+            if (openInterestChart1) {
+                openInterestChart1.destroy(); // Clear existing chart
+            }
+            // Calculate the desired maximum step size
+            const maxStepSize1 = 5; // Set your desired maximum step size
+            // Calculate the data range (difference between max and min values)
+            const dataMin1 = Math.min(...data1.data); // Replace with your actual data array
+            const dataMax1 = Math.max(...data1.data); // Replace with your actual data array
+            const dataRange1 = dataMax1 - dataMin1;
+            // Calculate the interval based on maxStepSize1 and dataRange1
+            const interval1 = Math.ceil(dataRange1 / maxStepSize1);
+            openInterestChart1 = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: data1.labels,
+                    datasets: [{
+                            label: 'Option Data',
+                            data: data1.data,
+                            borderColor: '#02fa40',
+                            borderWidth: 3,
+                        },
+                        {
+                            label: 'Zero Line',
+                            data: data1.zero,
+                            borderColor: '#de3023',
+                            borderWidth: 3,
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'category',
+                            labels: data1.labels,
+                            ticks: {
+                                color: '#fff', // Change x-axis labels color
+                                angle: -90,
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                min: dataMin1, // Minimum value for y-axis
+                                max: dataMax1, // Maximum value for y-axis
+                                stepSize: interval1, // Interval between ticks,
+                                color: 'white', // Change x-axis labels color
+                                callback: function(value, index, values) {
+                                    return '$' + value.toFixed(2); // Format y-axis tick labels
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    },
+                    theme: 'dark'
+                }
+            });
+        }
+        fetchChartDatatwo();
+    </script>
 @endsection

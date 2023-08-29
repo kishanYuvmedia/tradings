@@ -32,4 +32,5 @@ class UserApiController extends ResponseController
          return $this->sendError('No records have found');
       }
    }
+  
 }

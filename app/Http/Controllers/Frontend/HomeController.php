@@ -5,6 +5,7 @@ use Illuminate\Support\Collection;
 
 use App\Http\Controllers\Controller;
 use App\Models\Blog;
+use App\Models\Intraday;
 use View;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
@@ -594,8 +595,8 @@ class HomeController extends Controller
     {
         $currentNftData = 'http://nimblerest.lisuns.com:4531/GetLastQuote/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&instrumentIdentifier=' . $type . '-I';
         $currentNftDataresult = Http::get($currentNftData)->json();
-
         $currentOptionSrike = $currentNftDataresult['AVERAGETRADEDPRICE'];
+        
         $expiryApiUrl = 'http://nimblerest.lisuns.com:4531/GetExpiryDates/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=' . $type;
         $expApiResult = Http::get($expiryApiUrl)->json();
         $expDt = $expApiResult['EXPIRYDATES'] ?? [];
@@ -616,8 +617,8 @@ class HomeController extends Controller
                 'isUpcomingAfterInitial' => $isUpcomingAfterInitial,
             ];
         }
+        
         $apiEndpoint = 'http://nimblerest.lisuns.com:4531/GetLastQuoteOptionChain/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=' . $type . '&expiry=' . $selectedDate;
-
         try {
             $apiResult = Http::get($apiEndpoint)->json();
             $putArr = [];
@@ -628,27 +629,12 @@ class HomeController extends Controller
                 $value = end($identi);
                 if ($result['SERVERTIME'] > 0) {
                     if ($identi[3] == 'CE') {
-                        $callArr[] = array_merge($result, ['value' => $value]);
+                        $callArr[] = array_merge($result, ['value' => (int)$value,'optionType'=>$identi[3],'optionDate'=>$identi[2]]);
                     } elseif ($identi[3] == 'PE') {
-                        $putArr[] = array_merge($result, ['value' => $value]);
+                        $putArr[] = array_merge($result, ['value' => (int)$value,'optionType'=>$identi[3],'optionDate'=>$identi[2]]);
                     }
                 }
             }
-            $putArr = array_map(function ($item) {
-                $identi = explode('_', $item['INSTRUMENTIDENTIFIER']);
-                $item['value'] = (int) end($identi);
-                $item['optionType'] = $identi[3];
-                $item['optionDate'] = (int) $identi[2];
-                return $item;
-            }, $putArr);
-            $callArr = array_map(function ($item) {
-                $identi = explode('_', $item['INSTRUMENTIDENTIFIER']);
-                $item['value'] = (int) end($identi);
-                $item['optionType'] = $identi[3];
-                $item['optionDate'] = (int) $identi[2];
-                return $item;
-            }, $callArr);
-
             $closest = 0;
             foreach ($callArr as $item) {
                 if ($closest === null || abs($currentOptionSrike - $closest) > abs($item['value'] - $currentOptionSrike)) {
@@ -672,7 +658,7 @@ class HomeController extends Controller
                         'strike' => $closest,
                     ];
                 }
-                // dd($dataList);
+               
                 return view('frontend.derivatives', compact('dataList', 'typeNft', 'currentNftDataresult'));
             } else {
                 return view('frontend.derivatives', compact('dataList', 'typeNft', 'currentNftDataresult'));
@@ -681,9 +667,140 @@ class HomeController extends Controller
             error_log($e->getMessage());
         }
     }
-    public function intradayData()
+    public function getOpenInterestChartData()
+{
+    // Prepare data (example data)
+    $timeLabels = ['Session 1', 'Session 2', 'Session 3', 'Session 4', 'Session 5'];
+    $amountData = [5000000, 15000000, 20000000, 21500000, 24000000];
+    $zeroData = [0, 0, 0, 0, 0];
+    return response()->json([
+        'labels' => $timeLabels,
+        'data' => $amountData,
+        'zero'=>  $zeroData,
+    ]);
+}
+public function getOpenInterestChartDatatwo()
+{
+    // Prepare data (example data)
+    $timeLabels = ['Session 1', 'Session 2', 'Session 3', 'Session 4', 'Session 5'];
+    $amountData = [5000000, 15000000, 20000000, 21500000, 24000000];
+    $zeroData = [0, 0, 0, 0, 0];
+    return response()->json([
+        'labels' => $timeLabels,
+        'data' => $amountData,
+        'zero'=>  $zeroData,
+    ]);
+}
+public function getcurrentstrike($type)
     {
-        $currentNftData = 'http://nimblerest.lisuns.com:4531/GetLastQuote/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&instrumentIdentifier=' . $type . '-I';
-        $currentNftDataresult = Http::get($currentNftData)->json();
+      $currentNftData = 'http://nimblerest.lisuns.com:4531/GetLastQuote/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&instrumentIdentifier=' . $type . '-I';
+      $currentNftDataresult = Http::get($currentNftData)->json();
+      return response()->json([$currentNftDataresult]);
+    }
+    public function getexpdate($type)
+    {
+        $expiryApiUrl = 'http://nimblerest.lisuns.com:4531/GetExpiryDates/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=' . $type;
+        $expApiResult = Http::get($expiryApiUrl)->json();
+        $expDt = $expApiResult['EXPIRYDATES'] ?? [];
+        $typeNft = $type;
+        $currentTimestamp = time();
+        $expArray = [];
+        $selectedDate = null;
+        foreach ($expDt as $option) {
+            $carbonDate = Carbon::createFromFormat('dMY', $option);
+            $timestamp = $carbonDate->timestamp;
+            $isUpcomingOrCurrent = $timestamp >= $currentTimestamp;
+            $isUpcomingAfterInitial = empty($selectedDate) && $isUpcomingOrCurrent;
+            if ($isUpcomingAfterInitial) {
+                $selectedDate = $option;
+            }
+            $expArray[] = [
+                'option' => $option,
+                'isUpcomingAfterInitial' => $isUpcomingAfterInitial,
+            ];
+        }
+        return response()->json(['date'=>$selectedDate]);
+    }
+    public function getoptiondata($type,$currentOptionSrike)
+    {
+        $expiryApiUrl = 'http://nimblerest.lisuns.com:4531/GetExpiryDates/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=' . $type;
+        $expApiResult = Http::get($expiryApiUrl)->json();
+        $expDt = $expApiResult['EXPIRYDATES'] ?? [];
+        $typeNft = $type;
+        $currentTimestamp = time();
+        $expArray = [];
+        $selectedDate = null;
+        foreach ($expDt as $option) {
+            $carbonDate = Carbon::createFromFormat('dMY', $option);
+            $timestamp = $carbonDate->timestamp;
+            $isUpcomingOrCurrent = $timestamp >= $currentTimestamp;
+            $isUpcomingAfterInitial = empty($selectedDate) && $isUpcomingOrCurrent;
+            if ($isUpcomingAfterInitial) {
+                $selectedDate = $option;
+            }
+            $expArray[] = [
+                'option' => $option,
+                'isUpcomingAfterInitial' => $isUpcomingAfterInitial,
+            ];
+        }
+        $apiEndpoint = 'http://nimblerest.lisuns.com:4531/GetLastQuoteOptionChain/?accessKey=988dcf72-de6b-4637-9af7-fddbe9bfa7cd&exchange=NFO&product=' . $type . '&expiry=' . $selectedDate;
+        try {
+            $apiResult = Http::get($apiEndpoint)->json();
+            $putArr = [];
+            $callArr = [];
+            $finalcallputvalue = [];
+            foreach ($apiResult as $result) {
+                $identi = explode('_', $result['INSTRUMENTIDENTIFIER']);
+                $value = end($identi);      
+                if ($result['SERVERTIME'] > 0) {
+                    if ($identi[3] == 'CE') {
+                        $callArr[] = array_merge($result, ['value' => (int)$value,'optionType' =>$identi[3],'optiondate' =>$identi[2]]);
+                    } elseif ($identi[3] == 'PE') {
+                        $putArr[] = array_merge($result, ['value' =>  (int)$value,'optionType' =>$identi[3],'optiondate' =>$identi[2]]);
+                    }
+                }
+            }
+            
+            $closest = 0;
+          foreach ($callArr as $item) {
+              if ($closest === null || abs($currentOptionSrike - $closest) > abs($item['value'] - $currentOptionSrike)) {
+                  $closest = $item['value'];
+              }
+          }
+          $index = -1;
+          // Iterate through the array and search for the value
+          foreach ($callArr as $key => $subArray) {
+              if (in_array($closest, $subArray)) {
+                  $index = $key;
+                  break;
+              }
+          }
+          $otchangeCE=0;
+          $otchangePE=0;
+          if ($index !== -1) {
+              $dataList = [];
+              for ($i = $index - 6; $i < $index + 7; $i++) {
+                $otchangeCE+=$callArr[$i]['OPENINTERESTCHANGE'];
+                $otchangePE+=$putArr[$i]['OPENINTERESTCHANGE'];
+               
+              }
+              $dataList[] = [
+                'put' => $otchangePE,
+                'call' =>$otchangeCE,
+                'strike' => $closest,
+            ];
+          }
+        return response()->json(['data'=>$dataList]);
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+        }
+        
+    }
+    public function adddataIntradaynifty()
+    {
+        $getcurrentstrike = 'http://127.0.0.1:8000/api/getcurrentstrike/NIFTY';
+        $result = Http::get($getcurrentstrike)->json();
+        //Intraday::create($result[0]);
+        return response()->json(['status'=>$result[0]]);
     }
 }
