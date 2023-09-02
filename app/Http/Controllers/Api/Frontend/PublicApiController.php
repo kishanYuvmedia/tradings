@@ -77,7 +77,6 @@ class PublicApiController extends ResponseController
               $item['optionDate'] = $identi[2];
               return $item;
           }, $callArr);
-    
           $closest = 0;
           foreach ($callArr as $item) {
               if ($closest === null || abs($currentOptionSrike - $closest) > abs($item['value'] - $currentOptionSrike)) {

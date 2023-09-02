@@ -19,3 +19,4 @@ Route::get('/api/getcurrentstrike/{type}', 'HomeController@getcurrentstrike');
 Route::get('/api/getexpdate/{type}', 'HomeController@getexpdate');
 Route::get('/api/getoptiondata/{type}/{currentOptionSrike}', 'HomeController@getoptiondata');
 Route::get('/adddataIntradaynifty','HomeController@adddataIntradaynifty');
+Route::get('/chart-data/{type}', 'HomeController@getChartData');

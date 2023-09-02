@@ -1,14 +1,5 @@
-/*!
- =========================================================
- * ArchitectUI HTML Theme Dashboard - v1.0.0
- =========================================================
- * Product Page: https://dashboardpack.com
- * Copyright 2019 DashboardPack (https://dashboardpack.com)
- * Licensed under MIT (https://github.com/DashboardPack/architectui-html-theme-free/blob/master/LICENSE)
- =========================================================
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
- */
-.border-primary {
+
+ .border-primary {
     border-color: #3f6ad8;
 }
 .border-secondary {
@@ -4412,8 +4403,10 @@ input[type="button"].btn-block {
     border-bottom-left-radius: 0.25rem;
 }
 .card-body {
+    background-color: #161a20;
     flex: 1 1 auto;
     padding: 1.25rem;
+    border: 0.5px solid #2e2c2c;
 }
 .card-title {
     margin-bottom: 0.75rem;
@@ -13542,7 +13535,8 @@ a.badge-alternate:focus {
 .card.text-dark.text-white .card-header,
 .card.text-white .card-footer,
 .card.text-white .card-header {
-    background: rgba(255, 255, 255, 0.1);
+    border: .5px solid #3a3939;
+    background: rgb(22 26 32);
     color: rgba(255, 255, 255, 0.9);
 }
 .card.text-dark.text-white .card-footer,
@@ -21059,4 +21053,48 @@ a.fc-more:hover {
     height: 350px;
     margin-bottom: 30px;
     background-size: 100%;
+}
+/* CSS */
+.button-62 {
+  background: linear-gradient(to bottom right, #EF4765, #FF9A5A);
+  border: 0;
+  border-radius: 12px;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: -apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 2.5;
+  outline: transparent;
+  padding: 0 1rem;
+  text-align: center;
+  text-decoration: none;
+  transition: box-shadow .2s ease-in-out;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+}
+
+.button-62:not([disabled]):focus {
+  box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgba(239, 71, 101, 0.5), .125rem .125rem 1rem rgba(255, 154, 90, 0.5);
+}
+
+.button-62:not([disabled]):hover {
+  box-shadow: 0 0 .25rem rgba(0, 0, 0, 0.5), -.125rem -.125rem 1rem rgba(239, 71, 101, 0.5), .125rem .125rem 1rem rgba(255, 154, 90, 0.5);
+}
+.dot {
+    height: 10px;
+    width: 10px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .badge {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #007bff; /* Badge background color */
+    color: #fff; /* Text color */
+    border-radius: 3px; /* Rounded corners */
 }

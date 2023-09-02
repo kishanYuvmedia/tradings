@@ -23,6 +23,4 @@
 <!-- Bootstrap 4 -->
 <script src="{{ asset('/assets/js/bootstrap.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
 <!-- Override CSS file - add your own CSS rules -->
