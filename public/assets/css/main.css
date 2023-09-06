@@ -1,4 +1,13 @@
-
+/*!
+ =========================================================
+ * ArchitectUI HTML Theme Dashboard - v1.0.0
+ =========================================================
+ * Product Page: https://dashboardpack.com
+ * Copyright 2019 DashboardPack (https://dashboardpack.com)
+ * Licensed under MIT (https://github.com/DashboardPack/architectui-html-theme-free/blob/master/LICENSE)
+ =========================================================
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ */
  .border-primary {
     border-color: #3f6ad8;
 }
@@ -4385,10 +4394,10 @@ input[type="button"].btn-block {
     flex-direction: column;
     min-width: 0;
     word-wrap: break-word;
-    background-color: #161a20;
+    background-color: #fff;
     background-clip: border-box;
-    /* border: 1px solid rgba(26, 54, 126, 0.125); */
-    /* border-radius: 0.25rem; */
+    border: 1px solid rgba(26, 54, 126, 0.125);
+    border-radius: 0.25rem;
 }
 .card > hr {
     margin-right: 0;
@@ -4403,10 +4412,8 @@ input[type="button"].btn-block {
     border-bottom-left-radius: 0.25rem;
 }
 .card-body {
-    background-color: #161a20;
     flex: 1 1 auto;
     padding: 1.25rem;
-    border: 0.5px solid #2e2c2c;
 }
 .card-title {
     margin-bottom: 0.75rem;
@@ -9207,7 +9214,6 @@ button,
 .app-header.header-text-light .header__pane .hamburger-inner::before,
 .app-header.header-text-light .header__pane .hamburger-inner::after {
     background-color: rgba(255, 255, 255, 0.8) !important;
-    width: 2px;
 }
 .app-header.header-text-light
     .search-wrapper
@@ -9358,9 +9364,6 @@ button,
     margin-top: -60px;
     padding-top: 60px;
     transition: all 0.2s;
-    background-color: #161a20;
-    border-bottom: solid;
-    
 }
 .app-sidebar .app-sidebar__inner {
     padding: 2px 1.5rem 1.5rem;
@@ -9368,9 +9371,6 @@ button,
 .app-sidebar .scrollbar-sidebar {
     z-index: 15;
     width: 100%;
-    border-right:solid ;
-    border-width:1px ;
-    border-color: black;
 }
 .app-sidebar .app-sidebar-bg {
     position: absolute;
@@ -9455,7 +9455,7 @@ button,
     padding: 0 1.5rem 0 45px;
     position: relative;
     border-radius: 0.25rem;
-    color: #343a40;
+    color: #fbfbfb;
     white-space: nowrap;
     transition: all 0.2s;
     margin: 0.1rem 0;
@@ -9472,10 +9472,7 @@ button,
 }
 .vertical-nav-menu li.mm-active > a {
     font-weight: bold;
-    background: #e0f3ff26;
 }
-
-
 .vertical-nav-menu li.mm-active > a i.metismenu-state-icon {
     transform: rotate(-180deg);
 }
@@ -9874,20 +9871,21 @@ button,
 .app-main .app-main__inner {
     padding: 30px 5px 0;
     flex: 1;
-    background-color: #161a20;
 }
 .app-theme-white.app-container {
-    background: #f1f4f6;
+    background: #000000;
 }
 .app-theme-white .app-sidebar {
-    background: #fff;
+    background: #000;
+    border-right: .5px solid;
 }
 .app-theme-white .app-page-title {
-    background: rgba(255, 255, 255, 0.45);
+    background: rgb(0 0 0 / 45%);
 }
 .app-theme-white .app-footer .app-footer__inner,
 .app-theme-white .app-header {
-    background: #fafbfc;
+    background: #000000;
+    border-bottom: .5px solid;
 }
 .app-theme-white.fixed-header .app-header__logo {
     background: rgba(250, 251, 252, 0.1);
@@ -13355,6 +13353,7 @@ body {
 }
 .dropdown-menu.dropdown-menu-right {
     right: 0 !important;
+    background-color: #000;
 }
 .dropdown-menu .dropdown-header {
     text-transform: uppercase;
@@ -13363,6 +13362,7 @@ body {
     font-weight: bold;
 }
 .dropdown-menu .dropdown-item {
+    color: white;
     font-size: 0.88rem;
     display: flex;
     align-items: center;
@@ -13535,8 +13535,7 @@ a.badge-alternate:focus {
 .card.text-dark.text-white .card-header,
 .card.text-white .card-footer,
 .card.text-white .card-header {
-    border: .5px solid #3a3939;
-    background: rgb(22 26 32);
+    background: rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.9);
 }
 .card.text-dark.text-white .card-footer,
@@ -14036,6 +14035,7 @@ legend {
     flex: 1;
     position: relative;
     align-items: center;
+    color: white;
 }
 .widget-content .widget-content-left .widget-heading {
     opacity: 0.8;
@@ -14156,7 +14156,7 @@ legend {
 }
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
     .ps {
-        overflow: scroll !important;
+        overflow: auto !important;
     }
 }
 .scrollbar-sidebar,
@@ -18711,7 +18711,6 @@ legend {
 }
 .pe-7s-angle-down:before {
     content: "";
-    color: white;
 }
 .pe-7s-switch:before {
     content: "";
@@ -18940,8 +18939,6 @@ legend {
 }
 .pe-7s-menu:before {
     content: "";
-    color: white;
-   
 }
 .pe-7s-map:before {
     content: "";

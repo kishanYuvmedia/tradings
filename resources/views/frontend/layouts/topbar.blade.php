@@ -1,8 +1,6 @@
 <div class="app-header">
     <div class="app-header__logo" style="  border-right: solid; margin-right: 51px;   width: 280px;  padding-left: 22px;  border-color:black;  border-width:1px;">
-        <div class="logo-src"><img class="logo-scalping" src="{{ asset('assets/images/newlogo.png') }}" alt="Image">
-    
-
+        <div class="logo-src"><img class="logo-scalping" src="{{asset('assets/images/newlogo.png')}}" alt="Image">
         </div>
         <div class="header__pane ml-auto">
             <div>
